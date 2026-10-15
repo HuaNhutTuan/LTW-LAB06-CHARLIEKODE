@@ -28,3 +28,12 @@ x86/
 *.userosscache
 *.sln.docstates
 *.DotSettings.user
+
+## Presentation scripts, documentation, and reports
+*.pdf
+*.html
+KICH_BAN_*.md
+BAO_CAO_*.md
+TONG_HOP_*.md
+PHAN_TICH_*.md
+build_pdf.py
