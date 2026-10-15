@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Báo Cáo Danh Mục Toolbox - Phần Mềm Quản Lý Sản Phẩm (Lab06)</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 16mm 14mm 16mm 14mm;
+            @bottom-right {
+                content: counter(page) " / " counter(pages);
+            }
+        }
+        * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        body {
+            font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+            color: #24292e;
+            line-height: 1.5;
+            background: #fff;
+            margin: 0;
+            padding: 0;
+            font-size: 13px;
+        }
+        .header {
+            border-bottom: 3px solid #1e3a8a;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .header-title-box h1 {
+            color: #1e3a8a;
+            font-size: 20px;
+            margin: 0 0 6px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .header-title-box h2 {
+            color: #475569;
+            font-size: 13px;
+            font-weight: 600;
+            margin: 0;
+        }
+        .header-meta {
+            text-align: right;
+            font-size: 12px;
+            color: #64748b;
+        }
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .badge-primary {
+            background-color: #dbeafe;
+            color: #1d4ed8;
+        }
+        .badge-success {
+            background-color: #dcfce7;
+            color: #15803d;
+        }
+        .badge-warning {
+            background-color: #fef3c7;
+            color: #b45309;
+        }
+        .badge-info {
+            background-color: #e0f2fe;
+            color: #0369a1;
+        }
+        .badge-purple {
+            background-color: #f3e8ff;
+            color: #7e22ce;
+        }
+
+        h2.section-title {
+            color: #0f172a;
+            font-size: 15px;
+            border-left: 4px solid #2563eb;
+            padding-left: 8px;
+            margin-top: 22px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        p {
+            margin: 6px 0 10px 0;
+            text-align: justify;
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 10px;
+            text-align: center;
+        }
+        .card .number {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 2px;
+        }
+        .card .label {
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0 16px 0;
+            font-size: 12px;
+        }
+        table th {
+            background-color: #f1f5f9;
+            color: #1e293b;
+            font-weight: 600;
+            text-align: left;
+            padding: 8px 10px;
+            border: 1px solid #cbd5e1;
+        }
+        table td {
+            padding: 7px 10px;
+            border: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+        table tbody tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+        .ctrl-type {
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-weight: 700;
+            color: #0369a1;
+        }
+        .ctrl-name {
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 11px;
+            color: #b91c1c;
+            background: #fff1f2;
+            padding: 1px 4px;
+            border-radius: 3px;
+            display: inline-block;
+            margin-top: 2px;
+        }
+
+        .workflow-box {
+            background-color: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 14px;
+            page-break-inside: avoid;
+        }
+        .workflow-title {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+        .workflow-step {
+            display: flex;
+            margin-bottom: 4px;
+            font-size: 12px;
+        }
+        .step-num {
+            font-weight: 700;
+            color: #2563eb;
+            width: 22px;
+            flex-shrink: 0;
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+
+        .footer-note {
+            margin-top: 20px;
+            border-top: 1px dashed #cbd5e1;
+            padding-top: 10px;
+            font-size: 11px;
+            color: #64748b;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PHẦN HEADER BÁO CÁO -->
+    <div class="header">
+        <div class="header-title-box">
+            <h1>DANH MỤC CÁC ĐIỀU KHIỂN (TOOLBOX) ĐÃ SỬ DỤNG</h1>
+            <h2>PHẦN MỀM QUẢN LÝ SẢN PHẨM (PRODUCT MANAGER) - LAB 06</h2>
+            <div style="margin-top: 4px;">
+                <span class="badge badge-primary">Môn học: Lập Trình Trên Windows (COMP1019)</span>
+                <span class="badge badge-success">Chuyên đề: Nhóm 3 (StatusStrip, Tồn kho & File)</span>
+            </div>
+        </div>
+        <div class="header-meta">
+            <div><strong>Nền tảng:</strong> .NET Windows Forms</div>
+            <div><strong>Ngôn ngữ:</strong> C# (Visual Studio)</div>
+            <div><strong>Thời gian xuất:</strong> Tháng 10/2026</div>
+        </div>
+    </div>
+
+    <!-- TỔNG QUAN SỐ LIỆU -->
+    <div class="summary-cards">
+        <div class="card">
+            <div class="number">16</div>
+            <div class="label">Loại Toolbox Controls</div>
+        </div>
+        <div class="card">
+            <div class="number">32+</div>
+            <div class="label">Tổng số đối tượng (Instances)</div>
+        </div>
+        <div class="card">
+            <div class="number">5</div>
+            <div class="label">Nhóm điều khiển chính</div>
+        </div>
+        <div class="card">
+            <div class="number">100%</div>
+            <div class="label">Bao phủ chức năng đề tài</div>
+        </div>
+    </div>
+
+    <p>
+        Tài liệu này tổng hợp toàn bộ các thành phần giao diện, điều khiển người dùng (Controls), bộ chứa (Containers) và các thành phần phi giao diện (Components/Dialogs) từ thanh công cụ <strong>Toolbox</strong> của Visual Studio được lập trình và tích hợp trong ứng dụng <em>Product Manager</em>. Mỗi điều khiển được chỉ định rõ tên biến, nhóm phân loại, chức năng nghiệp vụ và các sự kiện (Events) được gán trong mã nguồn.
+    </p>
+
+    <!-- BẢNG TỔNG HỢP TOÀN BỘ CÁC LOẠI TOOLBOX VÀ CHỨC NĂNG -->
+    <h2 class="section-title">1. Bảng Tổng Hợp Chi Tiết Từng Loại Tool Box & Chức Năng Cụ Thể</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 18%;">Loại Tool Box (Control)</th>
+                <th style="width: 20%;">Tên biến trong Code</th>
+                <th style="width: 14%;">Nhóm Toolbox</th>
+                <th style="width: 48%;">Chức năng nghiệp vụ & Kỹ thuật xử lý sự kiện</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Form -->
+            <tr>
+                <td><span class="ctrl-type">Form</span></td>
+                <td><span class="ctrl-name">Form1</span></td>
+                <td><span class="badge badge-primary">Windows Form</span></td>
+                <td>Cửa sổ giao diện chính của ứng dụng. Quản lý toàn bộ vòng đời ứng dụng qua sự kiện <code>Form1_Load</code>, quản lý luồng trạng thái <code>FormMode (View / Add / Edit)</code> và điều phối dữ liệu.</td>
+            </tr>
+
+            <!-- Panel -->
+            <tr>
+                <td><span class="ctrl-type">Panel</span></td>
+                <td>
+                    <span class="ctrl-name">pnlHeader</span><br>
+                    <span class="ctrl-name">pnlHinhAnh</span><br>
+                    <span class="ctrl-name">pnlSearch</span>
+                </td>
+                <td><span class="badge badge-purple">Containers</span></td>
+                <td>
+                    <strong>• pnlHeader:</strong> Neo đỉnh (<code>Dock = Top</code>) làm tiêu đề ứng dụng.<br>
+                    <strong>• pnlHinhAnh:</strong> Khung chứa vùng xem và tải ảnh sản phẩm.<br>
+                    <strong>• pnlSearch:</strong> Thanh công cụ tìm kiếm và bộ lọc loại sản phẩm phía trên bảng dữ liệu.
+                </td>
+            </tr>
+
+            <!-- GroupBox -->
+            <tr>
+                <td><span class="ctrl-type">GroupBox</span></td>
+                <td>
+                    <span class="ctrl-name">grpThongTin</span><br>
+                    <span class="ctrl-name">grpDanhSach</span>
+                </td>
+                <td><span class="badge badge-purple">Containers</span></td>
+                <td>
+                    <strong>• grpThongTin:</strong> Gom nhóm trực quan vùng nhập liệu chi tiết của sản phẩm và các nút thao tác nghiệp vụ.<br>
+                    <strong>• grpDanhSach:</strong> Gom nhóm khu vực hiển thị danh sách sản phẩm và bộ lọc tìm kiếm (lấp đầy không gian <code>Dock = Fill</code>).
+                </td>
+            </tr>
+
+            <!-- FlowLayoutPanel -->
+            <tr>
+                <td><span class="ctrl-type">FlowLayoutPanel</span></td>
+                <td><span class="ctrl-name">pnlButtons</span></td>
+                <td><span class="badge badge-purple">Containers</span></td>
+                <td>Bộ chứa bố cục luồng tự động căn chỉnh và phân bổ hàng ngang cho dãy 7 nút chức năng (Thêm, Sửa, Cập nhật, Hủy, Xóa, Làm mới, Xuất file).</td>
+            </tr>
+
+            <!-- Label -->
+            <tr>
+                <td><span class="ctrl-type">Label</span></td>
+                <td>
+                    <span class="ctrl-name">lblMaSP</span>, <span class="ctrl-name">lblTenSP</span><br>
+                    <span class="ctrl-name">lblLoaiSP</span>, <span class="ctrl-name">lblDonGia</span><br>
+                    <span class="ctrl-name">lblSoLuong</span>, <span class="ctrl-name">lblNgayNhap</span><br>
+                    <span class="ctrl-name">lblTimKiem</span>, <span class="ctrl-name">lblLocLoai</span><br>
+                    <span class="ctrl-name">lblHeaderTitle, Subtitle</span>
+                </td>
+                <td><span class="badge badge-info">Common Controls</span></td>
+                <td>Hiển thị văn bản tĩnh, tiêu đề phần mềm, ghi chú và nhãn mô tả chỉ dẫn cho các trường nhập liệu, hình ảnh và thanh tìm kiếm.</td>
+            </tr>
+
+            <!-- TextBox -->
+            <tr>
+                <td><span class="ctrl-type">TextBox</span></td>
+                <td>
+                    <span class="ctrl-name">txtMaSP</span><br>
+                    <span class="ctrl-name">txtTenSP</span><br>
+                    <span class="ctrl-name">txtTimKiem</span>
+                </td>
+                <td><span class="badge badge-info">Common Controls</span></td>
+                <td>
+                    <strong>• txtMaSP:</strong> Nhập/hiển thị Mã sản phẩm (chỉ đọc khi xem/sửa, kiểm tra trùng mã khi thêm mới).<br>
+                    <strong>• txtTenSP:</strong> Nhập/hiển thị Tên đầy đủ của sản phẩm.<br>
+                    <strong>• txtTimKiem:</strong> Tìm kiếm tức thời (Real-time Search) theo Tên hoặc Mã SP thông qua sự kiện <code>TextChanged</code>.
+                </td>
+            </tr>
+
+            <!-- ComboBox -->
+            <tr>
+                <td><span class="ctrl-type">ComboBox</span></td>
+                <td>
+                    <span class="ctrl-name">cboLoaiSP</span><br>
+                    <span class="ctrl-name">cboLocLoai</span>
+                </td>
+                <td><span class="badge badge-info">Common Controls</span></td>
+                <td>
+                    <strong>• cboLoaiSP:</strong> Chọn phân loại sản phẩm (Điện thoại, Laptop, Phụ kiện, ...) khi thêm/sửa với kiểu <code>DropDownList</code> tránh nhập sai dữ liệu.<br>
+                    <strong>• cboLocLoai:</strong> Bộ lọc nhanh danh mục trên DataGridView thông qua sự kiện <code>SelectedIndexChanged</code>.
+                </td>
+            </tr>
+
+            <!-- NumericUpDown -->
+            <tr>
+                <td><span class="ctrl-type">NumericUpDown</span></td>
+                <td>
+                    <span class="ctrl-name">numDonGia</span><br>
+                    <span class="ctrl-name">numSoLuong</span>
+                </td>
+                <td><span class="badge badge-info">Common Controls</span></td>
+                <td>
+                    <strong>• numDonGia:</strong> Nhập đơn giá sản phẩm dạng số, hỗ trợ dấu phân cách hàng nghìn (<code>ThousandsSeparator = true</code>), tối đa 1.000.000.000 VNĐ.<br>
+                    <strong>• numSoLuong:</strong> Nhập số lượng tồn kho, chặn triệt để lỗi nhập chuỗi ký tự không hợp lệ.
+                </td>
+            </tr>
+
+            <!-- DateTimePicker -->
+            <tr>
+                <td><span class="ctrl-type">DateTimePicker</span></td>
+                <td><span class="ctrl-name">dtpNgayNhap</span></td>
+                <td><span class="badge badge-info">Common Controls</span></td>
+                <td>Chọn ngày nhập hàng hóa thông qua lịch giao diện trực quan, hiển thị theo định dạng Việt Nam <code>dd/MM/yyyy</code> (<code>Format = Custom</code>).</td>
+            </tr>
+
+            <!-- CheckBox -->
+            <tr>
+                <td><span class="ctrl-type">CheckBox</span></td>
+                <td><span class="ctrl-name">chkConKinhDoanh</span></td>
+                <td><span class="badge badge-info">Common Controls</span></td>
+                <td>Đánh dấu trạng thái kinh doanh của sản phẩm: Chọn (True - Đang kinh doanh) hoặc Bỏ chọn (False - Ngừng kinh doanh/hết hàng).</td>
+            </tr>
+
+            <!-- PictureBox -->
+            <tr>
+                <td><span class="ctrl-type">PictureBox</span></td>
+                <td><span class="ctrl-name">picHinhAnh</span></td>
+                <td><span class="badge badge-info">Common Controls</span></td>
+                <td>Hiển thị ảnh minh họa sản phẩm với chế độ co giãn tỷ lệ cân đối <code>SizeMode = Zoom</code>. Mã nguồn sử dụng nạp ảnh qua <code>MemoryStream</code> giúp giải phóng và không khóa file trên ổ cứng.</td>
+            </tr>
+
+            <!-- Button -->
+            <tr>
+                <td><span class="ctrl-type">Button</span></td>
+                <td>
+                    <span class="ctrl-name">btnThem</span>, <span class="ctrl-name">btnChinhSua</span><br>
+                    <span class="ctrl-name">btnCapNhat</span>, <span class="ctrl-name">btnHuy</span><br>
+                    <span class="ctrl-name">btnXoa</span>, <span class="ctrl-name">btnLamMoi</span><br>
+                    <span class="ctrl-name">btnBoLoc</span>, <span class="ctrl-name">btnChonAnh</span><br>
+                    <span class="ctrl-name">btnXuatFile</span>
+                </td>
+                <td><span class="badge badge-info">Common Controls</span></td>
+                <td>
+                    Thực hiện tương tác sự kiện <code>Click</code> cho toàn bộ các chức năng CRUD:<br>
+                    <strong>• btnThem / btnChinhSua:</strong> Chuyển trạng thái Form và mở khóa ô nhập liệu.<br>
+                    <strong>• btnCapNhat:</strong> Kiểm tra hợp lệ dữ liệu và ghi vào bộ nhớ.<br>
+                    <strong>• btnHuy / btnLamMoi:</strong> Hủy chỉnh sửa hoặc đặt lại trạng thái ban đầu.<br>
+                    <strong>• btnXoa:</strong> Xóa bản ghi đã chọn kèm hộp thoại xác nhận.<br>
+                    <strong>• btnBoLoc:</strong> Xóa từ khóa và hiển thị toàn bộ danh sách.<br>
+                    <strong>• btnChonAnh:</strong> Kích hoạt OpenFileDialog để nạp hình ảnh.<br>
+                    <strong>• btnXuatFile:</strong> Kích hoạt xuất báo cáo tồn kho ra file.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- TIẾP TỤC BẢNG CHO CÁC CONTROL NÂNG CAO -->
+    <h2 class="section-title">1. Bảng Chi Tiết Tool Box & Chức Năng (Tiếp theo)</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 18%;">Loại Tool Box (Control)</th>
+                <th style="width: 20%;">Tên biến trong Code</th>
+                <th style="width: 14%;">Nhóm Toolbox</th>
+                <th style="width: 48%;">Chức năng nghiệp vụ & Kỹ thuật xử lý sự kiện</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- DataGridView -->
+            <tr>
+                <td><span class="ctrl-type">DataGridView</span></td>
+                <td><span class="ctrl-name">dgvSanPham</span></td>
+                <td><span class="badge badge-warning">Data Controls</span></td>
+                <td>
+                    Hiển thị bảng dữ liệu sản phẩm dưới dạng lưới có cấu trúc. Hỗ trợ:<br>
+                    • Chọn trọn dòng (<code>SelectionMode = FullRowSelect</code>).<br>
+                    • Không cho phép sửa trực tiếp trên lưới (<code>ReadOnly = true</code>).<br>
+                    • Tô màu xen kẽ giữa các dòng (<code>AlternatingRowsDefaultCellStyle</code>).<br>
+                    • Sự kiện <code>SelectionChanged</code> tự động đẩy dữ liệu dòng được chọn lên các ô nhập liệu bên trên.
+                </td>
+            </tr>
+
+            <!-- DataGridView Columns -->
+            <tr>
+                <td><span class="ctrl-type">DataGridView Columns</span></td>
+                <td>
+                    <span class="ctrl-name">colMaSP, colTenSP</span><br>
+                    <span class="ctrl-name">colLoaiSP, colDonGia</span><br>
+                    <span class="ctrl-name">colSoLuong, colThanhTien</span><br>
+                    <span class="ctrl-name">colNgayNhap</span><br>
+                    <span class="ctrl-name">colConKinhDoanh</span>
+                </td>
+                <td><span class="badge badge-warning">Data Columns</span></td>
+                <td>
+                    <strong>• DataGridViewTextBoxColumn:</strong> Hiển thị chuỗi và số với định dạng chuẩn tiền tệ (<code>Format = "N0"</code>), ngày tháng (<code>"dd/MM/yyyy"</code>), căn lề phải cho cột số và căn giữa cho mã/ngày.<br>
+                    <strong>• DataGridViewCheckBoxColumn:</strong> Hiển thị cột Trạng thái kinh doanh dưới dạng ô đánh dấu trực quan.
+                </td>
+            </tr>
+
+            <!-- StatusStrip -->
+            <tr>
+                <td><span class="ctrl-type">StatusStrip</span></td>
+                <td><span class="ctrl-name">statusStrip1</span></td>
+                <td><span class="badge badge-success">Menus & Toolbars</span></td>
+                <td>Thanh trạng thái gắn đáy ứng dụng (<code>Dock = Bottom</code>). Cung cấp thông tin tổng quan, phản hồi thao tác và thống kê chỉ số kho hàng tức thời cho người sử dụng.</td>
+            </tr>
+
+            <!-- ToolStripStatusLabel -->
+            <tr>
+                <td><span class="ctrl-type">ToolStripStatusLabel</span></td>
+                <td>
+                    <span class="ctrl-name">lblTrangThai</span><br>
+                    <span class="ctrl-name">lblTongSanPham</span><br>
+                    <span class="ctrl-name">lblTongGiaTriTonKho</span><br>
+                    <span class="ctrl-name">lblDongHo</span>
+                </td>
+                <td><span class="badge badge-success">StatusStrip Items</span></td>
+                <td>
+                    <strong>• lblTrangThai:</strong> Thông báo trạng thái tương tác hiện tại (<code>Spring = true</code> để dãn đều thanh).<br>
+                    <strong>• lblTongSanPham:</strong> Thống kê số lượng mặt hàng và tổng số lượng tồn kho.<br>
+                    <strong>• lblTongGiaTriTonKho:</strong> Thống kê tổng thành tiền tồn kho (VNĐ) tự động tính toán lại khi lọc/thêm/sửa/xóa.<br>
+                    <strong>• lblDongHo:</strong> Hiển thị thời gian hệ thống thực tế.
+                </td>
+            </tr>
+
+            <!-- Timer -->
+            <tr>
+                <td><span class="ctrl-type">Timer</span></td>
+                <td><span class="ctrl-name">timerDongHo</span></td>
+                <td><span class="badge badge-purple">Components</span></td>
+                <td>Bộ đếm thời gian với chu kỳ 1000ms (1 giây), kích hoạt sự kiện <code>Tick</code> để cập nhật thời gian chính xác theo từng giây lên thanh StatusStrip.</td>
+            </tr>
+
+            <!-- OpenFileDialog -->
+            <tr>
+                <td><span class="ctrl-type">OpenFileDialog</span></td>
+                <td><span class="ctrl-name">ofd (Trong btnChonAnh_Click)</span></td>
+                <td><span class="badge badge-purple">Dialogs</span></td>
+                <td>Mở hộp thoại hệ điều hành cho phép người dùng duyệt và chọn file ảnh đại diện (*.jpg, *.png, *.bmp, *.gif) từ máy tính nạp vào PictureBox.</td>
+            </tr>
+
+            <!-- SaveFileDialog -->
+            <tr>
+                <td><span class="ctrl-type">SaveFileDialog</span></td>
+                <td><span class="ctrl-name">sfd (Trong btnXuatFile_Click)</span></td>
+                <td><span class="badge badge-purple">Dialogs</span></td>
+                <td>Hộp thoại chuẩn cho phép người dùng chọn thư mục và đặt tên file cần lưu để trích xuất báo cáo tồn kho hỗ trợ 2 định dạng: <strong>.txt</strong> (Báo cáo văn bản có kẻ bảng) và <strong>.csv</strong> (Mở trên Microsoft Excel).</td>
+            </tr>
+
+            <!-- BindingSource & BindingList -->
+            <tr>
+                <td><span class="ctrl-type">BindingSource</span></td>
+                <td>
+                    <span class="ctrl-name">_bindingSource</span><br>
+                    <span class="ctrl-name">_danhSachGoc (BindingList)</span>
+                </td>
+                <td><span class="badge badge-warning">Data Components</span></td>
+                <td>Thành phần liên kết dữ liệu hai chiều (Two-way Data Binding) trung gian giữa danh sách mô hình hướng đối tượng <code>Product</code> và bảng hiển thị <code>DataGridView</code>, giúp tự động cập nhật giao diện khi dữ liệu thay đổi và quản lý con trỏ hiện tại (<code>Current</code>).</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- PHÂN TÍCH THEO CÁC LUỒNG NGHIỆP VỤ -->
+    <h2 class="section-title">2. Mối Liên Kết Giữa Các Tool Box Theo Luồng Nghiệp Vụ Chính</h2>
+
+    <div class="workflow-box">
+        <div class="workflow-title">A. Luồng Thêm Mới & Chỉnh Sửa Sản Phẩm (CRUD Workflow)</div>
+        <div class="workflow-step">
+            <span class="step-num">1.</span>
+            <span>Người dùng bấm <strong>btnThem</strong> hoặc <strong>btnChinhSua</strong> &rarr; Hàm <code>ThietLapTrangThaiForm()</code> kích hoạt mở khóa (<code>Enabled = true, ReadOnly = false</code>) trên các điều khiển nhập liệu: <strong>txtMaSP, txtTenSP, cboLoaiSP, numDonGia, numSoLuong, dtpNgayNhap, chkConKinhDoanh, btnChonAnh</strong>.</span>
+        </div>
+        <div class="workflow-step">
+            <span class="step-num">2.</span>
+            <span>Các nút chuyển trạng thái: <strong>btnThem, btnChinhSua, btnXoa</strong> bị vô hiệu hóa; ngược lại <strong>btnCapNhat, btnHuy</strong> được bật. Lưới <strong>dgvSanPham</strong> và vùng tìm kiếm <strong>pnlSearch</strong> tạm khóa để tránh xung đột dữ liệu.</span>
+        </div>
+        <div class="workflow-step">
+            <span class="step-num">3.</span>
+            <span>Bấm <strong>btnCapNhat</strong> &rarr; Thực hiện kiểm tra tính hợp lệ dữ liệu (Validate) &rarr; Lưu vào đối tượng <code>Product</code> và cập nhật vào <strong>_bindingSource</strong> &rarr; Tự động phản ánh lên <strong>dgvSanPham</strong> &rarr; Gọi hàm <code>CapNhatThongKeStatusStrip()</code> cập nhật số liệu trên <strong>statusStrip1</strong>.</span>
+        </div>
+    </div>
+
+    <div class="workflow-box">
+        <div class="workflow-title">B. Luồng Tìm Kiếm Tức Thời & Lọc Phân Loại (Real-time Filter Workflow)</div>
+        <div class="workflow-step">
+            <span class="step-num">1.</span>
+            <span>Khi người dùng gõ từ khóa vào <strong>txtTimKiem</strong> (sự kiện <code>TextChanged</code>) hoặc thay đổi lựa chọn tại <strong>cboLocLoai</strong> (sự kiện <code>SelectedIndexChanged</code>) &rarr; Hàm <code>ThucHienLocVaTimKiem()</code> được kích hoạt tự động.</span>
+        </div>
+        <div class="workflow-step">
+            <span class="step-num">2.</span>
+            <span>Chương trình duyệt danh sách dữ liệu gốc, lọc các sản phẩm thỏa mãn đồng thời cả tên/mã và chủng loại &rarr; Gán danh sách kết quả vào <strong>_bindingSource.DataSource</strong>.</span>
+        </div>
+        <div class="workflow-step">
+            <span class="step-num">3.</span>
+            <span>Bảng <strong>dgvSanPham</strong> lập tức chỉ hiển thị các mặt hàng phù hợp; các nhãn thống kê <strong>lblTongSanPham</strong> và <strong>lblTongGiaTriTonKho</strong> tự động tính toán lại theo đúng số sản phẩm đang được lọc ra.</span>
+        </div>
+    </div>
+
+    <div class="workflow-box">
+        <div class="workflow-title">C. Luồng Trích Xuất File Báo Cáo Tồn Kho (Export File Workflow - Nhóm 3)</div>
+        <div class="workflow-step">
+            <span class="step-num">1.</span>
+            <span>Người dùng bấm <strong>btnXuatFile</strong> &rarr; Khởi tạo <strong>SaveFileDialog</strong> với các bộ lọc định dạng (.txt, .csv) và tên file gợi ý theo ngày giờ hiện tại.</span>
+        </div>
+        <div class="workflow-step">
+            <span class="step-num">2.</span>
+            <span>Khi người dùng xác nhận lưu file, chương trình gọi lớp nghiệp vụ <code>ProductFileService</code> sử dụng <code>StreamWriter</code> để ghi toàn bộ danh sách sản phẩm (kèm bảng thống kê tổng số lượng, tổng giá trị tồn kho) theo chuẩn mã hóa UTF-8.</span>
+        </div>
+        <div class="workflow-step">
+            <span class="step-num">3.</span>
+            <span>Thông báo thành công trên <strong>lblTrangThai</strong> và hiển thị <strong>MessageBox</strong> cho phép mở ngay file vừa xuất bằng phần mềm mặc định của máy tính (Notepad/Excel).</span>
+        </div>
+    </div>
+
+    <div class="footer-note">
+        <span>Báo cáo được trích xuất tự động từ dự án thực tế <strong>Lab06 - Windows Forms C#</strong></span>
+        <span>Nhóm 3: Chuyên đề StatusStrip, Tồn kho & Đọc/Ghi File</span>
+    </div>
+
+</body>
+</html>

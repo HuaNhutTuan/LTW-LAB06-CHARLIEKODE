@@ -7,17 +7,12 @@ using Lab06.Models;
 
 namespace Lab06.Services
 {
-    /// <summary>
-    /// Lớp tiện ích hỗ trợ tạo dữ liệu mẫu và tạo hình ảnh mẫu tự động
-    /// Giúp ứng dụng chạy độc lập, hiển thị ảnh trực quan trên mọi máy tính mà không lo thiếu file ảnh
-    /// </summary>
+
     public static class SampleDataHelper
     {
         private static readonly string ImagesFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "SampleImages");
 
-        /// <summary>
-        /// Tạo các hình ảnh mẫu trực quan nếu chưa tồn tại
-        /// </summary>
+
         public static void EnsureSampleImagesExist()
         {
             try
@@ -35,7 +30,7 @@ namespace Lab06.Services
             }
             catch
             {
-                // Bỏ qua nếu có lỗi quyền ghi thư mục, chương trình vẫn hoạt động bình thường
+               
             }
         }
 

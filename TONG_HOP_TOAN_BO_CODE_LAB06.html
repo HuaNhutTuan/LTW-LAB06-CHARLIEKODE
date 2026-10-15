@@ -1,0 +1,1731 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Tổng Hợp Toàn Bộ Code Lab 06 - Nhóm 3 (Đã Tối Ưu)</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 14mm 12mm 14mm 12mm;
+        }
+        * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #2c3e50;
+            line-height: 1.5;
+            font-size: 12.5px;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            color: #1a365d;
+            font-size: 18px;
+            border-bottom: 2px solid #3182ce;
+            padding-bottom: 5px;
+            margin-top: 1.2em;
+        }
+        h2 {
+            color: #2b6cb0;
+            font-size: 14.5px;
+            border-left: 4px solid #3182ce;
+            padding-left: 8px;
+            margin-top: 1.2em;
+        }
+        pre {
+            background: #1e1e1e;
+            color: #dcdcdc;
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 11px;
+            line-height: 1.42;
+            overflow-x: auto;
+            border: 1px solid #333;
+            page-break-inside: avoid;
+        }
+        code {
+            font-family: 'Consolas', 'Courier New', monospace;
+            background: #edf2f7;
+            color: #c53030;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-size: 11.5px;
+        }
+        pre code {
+            background: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 12px;
+            page-break-inside: avoid;
+        }
+        th, td {
+            border: 1px solid #cbd5e0;
+            padding: 7px 9px;
+            text-align: left;
+        }
+        th {
+            background: #ebf8ff;
+            color: #2c5282;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background: #f7fafc;
+        }
+        .page-break {
+            page-break-after: always;
+        }
+    </style>
+</head>
+<body>
+<h1>TỔNG HỢP TOÀN BỘ MÃ NGUỒN (SOURCE CODE) DỰ ÁN LAB 06</h1>
+<p><strong>Môn học:</strong> COMP1019 – Lập trình trên Windows | <strong>Nhóm 3:</strong> StatusStrip Real-time, Thống kê tồn kho & Đọc/Ghi File</p>
+<p><strong>Trạng thái:</strong> Toàn bộ mã nguồn đã được tối ưu hóa giao diện tinh gọn (900 &times; 630 px), biên dịch thành công 0 Warning, 0 Error.</p>
+
+<hr style="border:0; border-top:1px solid #cbd5e0; margin:15px 0;">
+
+<h2>1. Tệp 1: Models/Product.cs (Thực thể sản phẩm)</h2>
+<pre><code class="csharp">using System;
+
+namespace Lab06.Models
+{
+    /// &lt;summary&gt;
+    /// Lớp biểu diễn thông tin một sản phẩm trong hệ thống
+    /// Đáp ứng đúng yêu cầu của Bài Lab 06 - COMP1019
+    /// &lt;/summary&gt;
+    public class Product
+    {
+        // 1. Mã sản phẩm
+        public string MaSP { get; set; } = string.Empty;
+
+        // 2. Tên sản phẩm
+        public string TenSP { get; set; } = string.Empty;
+
+        // 3. Loại sản phẩm (Điện thoại, Laptop, Phụ kiện, Máy tính bảng...)
+        public string LoaiSP { get; set; } = string.Empty;
+
+        // 4. Đơn giá sản phẩm (đơn vị: VNĐ)
+        public decimal DonGia { get; set; }
+
+        // 5. Số lượng tồn kho
+        public int SoLuong { get; set; }
+
+        // 6. Ngày nhập hàng vào kho
+        public DateTime NgayNhap { get; set; } = DateTime.Now;
+
+        // 7. Trạng thái còn tiếp tục kinh doanh hay ngừng bán
+        public bool ConKinhDoanh { get; set; } = true;
+
+        // 8. Đường dẫn file hình ảnh minh họa của sản phẩm (lưu ngầm trong bộ nhớ, không hiển thị cột lên giao diện)
+        [System.ComponentModel.Browsable(false)]
+        public string DuongDanAnh { get; set; } = string.Empty;
+
+        // Thuộc tính tiện ích tính thành tiền tồn kho của từng sản phẩm
+        public decimal ThanhTien =&gt; DonGia * SoLuong;
+
+        // Hàm khởi tạo mặc định (Parameterless constructor)
+        public Product()
+        {
+        }
+
+        // Hàm khởi tạo đầy đủ tham số
+        public Product(string maSP, string tenSP, string loaiSP, decimal donGia, int soLuong, DateTime ngayNhap, bool conKinhDoanh, string duongDanAnh = &quot;&quot;)
+        {
+            MaSP = maSP;
+            TenSP = tenSP;
+            LoaiSP = loaiSP;
+            DonGia = donGia;
+            SoLuong = soLuong;
+            NgayNhap = ngayNhap;
+            ConKinhDoanh = conKinhDoanh;
+            DuongDanAnh = duongDanAnh;
+        }
+
+        /// &lt;summary&gt;
+        /// Tạo bản sao đối tượng để phục vụ thao tác sửa an toàn
+        /// &lt;/summary&gt;
+        public Product Clone()
+        {
+            return new Product(MaSP, TenSP, LoaiSP, DonGia, SoLuong, NgayNhap, ConKinhDoanh, DuongDanAnh);
+        }
+    }
+}
+</code></pre>
+
+<div class="page-break"></div>
+<h2>2. Tệp 2: Services/ProductFileService.cs (Dịch vụ xuất file TXT & CSV)</h2>
+<pre><code class="csharp">using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using Lab06.Models;
+
+namespace Lab06.Services
+{
+    /// &lt;summary&gt;
+    /// Lớp dịch vụ xử lý xuất/nhập file dữ liệu sản phẩm
+    /// Thuộc nội dung chuyên sâu của NHÓM 3: Đọc/Ghi File với StreamWriter và SaveFileDialog
+    /// &lt;/summary&gt;
+    public static class ProductFileService
+    {
+        /// &lt;summary&gt;
+        /// Xuất danh sách sản phẩm ra file văn bản (.txt) dạng báo cáo thống kê kho
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;filePath&quot;&gt;Đường dẫn file cần lưu&lt;/param&gt;
+        /// &lt;param name=&quot;products&quot;&gt;Danh sách sản phẩm&lt;/param&gt;
+        public static void ExportToTxt(string filePath, IEnumerable&lt;Product&gt; products)
+        {
+            // Sử dụng Encoding.UTF8 để hỗ trợ tiếng Việt có dấu chuẩn xác
+            using (StreamWriter writer = new StreamWriter(filePath, false, Encoding.UTF8))
+            {
+                // 1. Ghi phần Header của báo cáo
+                writer.WriteLine(&quot;====================================================================================================&quot;);
+                writer.WriteLine(&quot;                         BÁO CÁO THỐNG KÊ TỒN KHO VÀ DANH SÁCH SẢN PHẨM                            &quot;);
+                writer.WriteLine(&quot;                              (Phần mềm Quản lý sản phẩm - Nhóm 3)                                  &quot;);
+                writer.WriteLine(&quot;====================================================================================================&quot;);
+                writer.WriteLine($&quot;Ngày xuất báo cáo : {DateTime.Now:dd/MM/yyyy HH:mm:ss}&quot;);
+                writer.WriteLine($&quot;Người lập báo cáo : Quản trị viên hệ thống&quot;);
+                writer.WriteLine(&quot;----------------------------------------------------------------------------------------------------&quot;);
+
+                // 2. Ghi tiêu đề các cột với căn lề thẳng hàng
+                // {0,-10}: Căn trái 10 ký tự, {3,15}: Căn phải 15 ký tự
+                writer.WriteLine(string.Format(&quot;{0,-8} | {1,-26} | {2,-18} | {3,18} | {4,12} | {5,-16} | {6,-14}&quot;,
+                    &quot;Mã SP&quot;, &quot;Tên Sản Phẩm&quot;, &quot;Loại SP&quot;, &quot;Đơn Giá (VNĐ)&quot;, &quot;SL Tồn Kho&quot;, &quot;Ngày Nhập&quot;, &quot;Kinh Doanh&quot;));
+                writer.WriteLine(&quot;----------------------------------------------------------------------------------------------------&quot;);
+
+                int tongSoLuongSP = 0;
+                decimal tongGiaTriTonKho = 0;
+                int demSanPham = 0;
+
+                // 3. Duyệt từng sản phẩm và ghi dòng dữ liệu
+                foreach (var p in products)
+                {
+                    demSanPham++;
+                    tongSoLuongSP += p.SoLuong;
+                    decimal thanhTien = p.SoLuong * p.DonGia;
+                    tongGiaTriTonKho += thanhTien;
+
+                    string trangThaiKD = p.ConKinhDoanh ? &quot;Đang bán&quot; : &quot;Ngừng bán&quot;;
+
+                    // Cắt ngắn tên nếu quá dài để bảng báo cáo luôn ngay ngắn
+                    string tenHienThi = p.TenSP.Length &gt; 24 ? p.TenSP.Substring(0, 21) + &quot;...&quot; : p.TenSP;
+
+                    writer.WriteLine(string.Format(&quot;{0,-8} | {1,-26} | {2,-18} | {3,18} | {4,12} | {5,-16:dd/MM/yyyy} | {6,-14}&quot;,
+                        p.MaSP,
+                        tenHienThi,
+                        p.LoaiSP,
+                        p.DonGia,
+                        p.SoLuong,
+                        p.NgayNhap,
+                        trangThaiKD));
+                }
+
+                // 4. Ghi phần chân trang thống kê tổng kết
+                writer.WriteLine(&quot;====================================================================================================&quot;);
+                writer.WriteLine(&quot;TỔNG KẾT BÁO CÁO:&quot;);
+                writer.WriteLine($&quot;- Tổng số mặt hàng (mã sản phẩm) : {demSanPham} mặt hàng&quot;);
+                writer.WriteLine($&quot;- Tổng số lượng sản phẩm tồn kho : {tongSoLuongSP:N0} cái/chiếc&quot;);
+                writer.WriteLine($&quot;- TỔNG GIÁ TRỊ TỒN KHO            : {tongGiaTriTonKho:N0} VNĐ&quot;);
+                writer.WriteLine(&quot;====================================================================================================&quot;);
+                writer.WriteLine(&quot;Ghi chú: Báo cáo được trích xuất tự động từ phần mềm ProductManager - Windows Forms Nâng cao.&quot;);
+            }
+        }
+
+        /// &lt;summary&gt;
+        /// Xuất danh sách sản phẩm ra file CSV (.csv) mở được trực tiếp bằng Microsoft Excel
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;filePath&quot;&gt;Đường dẫn file&lt;/param&gt;
+        /// &lt;param name=&quot;products&quot;&gt;Danh sách sản phẩm&lt;/param&gt;
+        public static void ExportToCsv(string filePath, IEnumerable&lt;Product&gt; products)
+        {
+            // Thêm Encoding UTF8 with BOM để Microsoft Excel tự động nhận diện tiếng Việt không bị lỗi font
+            using (StreamWriter writer = new StreamWriter(filePath, false, new UTF8Encoding(true)))
+            {
+                // Ghi dòng tiêu đề cột CSV (không chứa cột đường dẫn ảnh)
+                writer.WriteLine(&quot;MaSP,TenSP,LoaiSP,DonGia,SoLuong,NgayNhap,ConKinhDoanh,ThanhTien&quot;);
+
+                foreach (var p in products)
+                {
+                    // Escape tên sản phẩm nếu có dấu phẩy hoặc ngoặc kép
+                    string tenSP = p.TenSP.Replace(&quot;\&quot;&quot;, &quot;\&quot;\&quot;&quot;);
+                    if (tenSP.Contains(&quot;,&quot;) || tenSP.Contains(&quot;\&quot;&quot;))
+                    {
+                        tenSP = $&quot;\&quot;{tenSP}\&quot;&quot;;
+                    }
+
+                    string dongData = string.Format(&quot;{0},{1},{2},{3},{4},{5:yyyy-MM-dd},{6},{7}&quot;,
+                        p.MaSP,
+                        tenSP,
+                        p.LoaiSP,
+                        p.DonGia,
+                        p.SoLuong,
+                        p.NgayNhap,
+                        p.ConKinhDoanh ? &quot;1&quot; : &quot;0&quot;,
+                        p.ThanhTien);
+
+                    writer.WriteLine(dongData);
+                }
+            }
+        }
+    }
+}
+</code></pre>
+
+<div class="page-break"></div>
+<h2>3. Tệp 3: Services/SampleDataHelper.cs (Dữ liệu mẫu & Đồ họa GDI+)</h2>
+<pre><code class="csharp">using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.IO;
+using Lab06.Models;
+
+namespace Lab06.Services
+{
+    /// &lt;summary&gt;
+    /// Lớp tiện ích hỗ trợ tạo dữ liệu mẫu và tạo hình ảnh mẫu tự động
+    /// Giúp ứng dụng chạy độc lập, hiển thị ảnh trực quan trên mọi máy tính mà không lo thiếu file ảnh
+    /// &lt;/summary&gt;
+    public static class SampleDataHelper
+    {
+        private static readonly string ImagesFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, &quot;SampleImages&quot;);
+
+        /// &lt;summary&gt;
+        /// Tạo các hình ảnh mẫu trực quan nếu chưa tồn tại
+        /// &lt;/summary&gt;
+        public static void EnsureSampleImagesExist()
+        {
+            try
+            {
+                if (!Directory.Exists(ImagesFolder))
+                {
+                    Directory.CreateDirectory(ImagesFolder);
+                }
+
+                CreatePlaceholderImage(&quot;SP01.png&quot;, &quot;iPhone 15 Pro&quot;, &quot;ĐIỆN THOẠI&quot;, Color.FromArgb(41, 128, 185));
+                CreatePlaceholderImage(&quot;SP02.png&quot;, &quot;MacBook Air M3&quot;, &quot;LAPTOP&quot;, Color.FromArgb(39, 174, 96));
+                CreatePlaceholderImage(&quot;SP03.png&quot;, &quot;Logitech MX Mech&quot;, &quot;PHỤ KIỆN&quot;, Color.FromArgb(142, 68, 173));
+                CreatePlaceholderImage(&quot;SP04.png&quot;, &quot;Galaxy S24 Ultra&quot;, &quot;ĐIỆN THOẠI&quot;, Color.FromArgb(230, 126, 34));
+                CreatePlaceholderImage(&quot;SP05.png&quot;, &quot;Sony WH-1000XM5&quot;, &quot;PHỤ KIỆN&quot;, Color.FromArgb(192, 57, 43));
+            }
+            catch
+            {
+                // Bỏ qua nếu có lỗi quyền ghi thư mục, chương trình vẫn hoạt động bình thường
+            }
+        }
+
+        private static void CreatePlaceholderImage(string fileName, string title, string category, Color bgColor)
+        {
+            string fullPath = Path.Combine(ImagesFolder, fileName);
+            if (File.Exists(fullPath))
+            {
+                return;
+            }
+
+            int width = 300;
+            int height = 240;
+
+            using (Bitmap bmp = new Bitmap(width, height))
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                g.SmoothingMode = SmoothingMode.AntiAlias;
+
+                // Tô nền gradient hiện đại
+                using (LinearGradientBrush brush = new LinearGradientBrush(
+                    new Rectangle(0, 0, width, height),
+                    bgColor,
+                    Color.FromArgb(240, 240, 240),
+                    LinearGradientMode.ForwardDiagonal))
+                {
+                    g.FillRectangle(brush, 0, 0, width, height);
+                }
+
+                // Vẽ khung viền
+                using (Pen pen = new Pen(bgColor, 4))
+                {
+                    g.DrawRectangle(pen, 2, 2, width - 4, height - 4);
+                }
+
+                // Vẽ thẻ danh mục
+                using (SolidBrush tagBrush = new SolidBrush(Color.White))
+                using (Font tagFont = new Font(&quot;Segoe UI&quot;, 10, FontStyle.Bold))
+                {
+                    g.FillRectangle(tagBrush, 20, 25, 120, 28);
+                    g.DrawString(category, tagFont, new SolidBrush(bgColor), 25, 30);
+                }
+
+                // Vẽ tên sản phẩm
+                using (Font titleFont = new Font(&quot;Segoe UI&quot;, 13, FontStyle.Bold))
+                using (SolidBrush textBrush = new SolidBrush(Color.FromArgb(30, 30, 30)))
+                {
+                    g.DrawString(title, titleFont, textBrush, new RectangleF(20, 75, width - 40, 60));
+                }
+
+                // Vẽ biểu tượng minh họa
+                using (Font subFont = new Font(&quot;Segoe UI&quot;, 9, FontStyle.Italic))
+                using (SolidBrush subBrush = new SolidBrush(Color.FromArgb(80, 80, 80)))
+                {
+                    g.DrawString(&quot;Ảnh mẫu demo ProductManager&quot;, subFont, subBrush, 20, 195);
+                }
+
+                bmp.Save(fullPath, System.Drawing.Imaging.ImageFormat.Png);
+            }
+        }
+
+        /// &lt;summary&gt;
+        /// Lấy danh sách 5 sản phẩm mẫu phong phú (vượt tiêu chí tối thiểu 3 sản phẩm của đề bài)
+        /// &lt;/summary&gt;
+        public static List&lt;Product&gt; GetSampleProducts()
+        {
+            EnsureSampleImagesExist();
+
+            string imgPath(string file) =&gt; Path.Combine(ImagesFolder, file);
+
+            return new List&lt;Product&gt;
+            {
+                new Product(&quot;SP01&quot;, &quot;iPhone 15 Pro Max 256GB&quot;, &quot;Điện thoại&quot;, 29990000m, 15, new DateTime(2026, 9, 15), true, imgPath(&quot;SP01.png&quot;)),
+                new Product(&quot;SP02&quot;, &quot;MacBook Air M3 16GB&quot;, &quot;Laptop&quot;, 27490000m, 8, new DateTime(2026, 9, 20), true, imgPath(&quot;SP02.png&quot;)),
+                new Product(&quot;SP03&quot;, &quot;Bàn phím Logitech MX Mechanical&quot;, &quot;Phụ kiện&quot;, 3250000m, 30, new DateTime(2026, 9, 28), true, imgPath(&quot;SP03.png&quot;)),
+                new Product(&quot;SP04&quot;, &quot;Samsung Galaxy S24 Ultra&quot;, &quot;Điện thoại&quot;, 26990000m, 12, new DateTime(2026, 10, 1), true, imgPath(&quot;SP04.png&quot;)),
+                new Product(&quot;SP05&quot;, &quot;Tai nghe Sony WH-1000XM5&quot;, &quot;Phụ kiện&quot;, 6490000m, 20, new DateTime(2026, 10, 5), true, imgPath(&quot;SP05.png&quot;))
+            };
+        }
+    }
+}
+</code></pre>
+
+<div class="page-break"></div>
+<h2>4. Tệp 4: Form1.Designer.cs (Giao diện tinh gọn mới - 568 dòng)</h2>
+<pre><code class="csharp">namespace Lab06
+{
+    partial class Form1
+    {
+        private System.ComponentModel.IContainer components = null;
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing &amp;&amp; (components != null))
+                components.Dispose();
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        private void InitializeComponent()
+        {
+            this.components = new System.ComponentModel.Container();
+
+            // ── Controls ──────────────────────────────────────────────
+            this.grpThongTin        = new System.Windows.Forms.GroupBox();
+            this.lblMaSP            = new System.Windows.Forms.Label();
+            this.txtMaSP            = new System.Windows.Forms.TextBox();
+            this.lblTenSP           = new System.Windows.Forms.Label();
+            this.txtTenSP           = new System.Windows.Forms.TextBox();
+            this.lblLoaiSP          = new System.Windows.Forms.Label();
+            this.cboLoaiSP          = new System.Windows.Forms.ComboBox();
+            this.lblDonGia          = new System.Windows.Forms.Label();
+            this.numDonGia          = new System.Windows.Forms.NumericUpDown();
+            this.lblSoLuong         = new System.Windows.Forms.Label();
+            this.numSoLuong         = new System.Windows.Forms.NumericUpDown();
+            this.lblNgayNhap        = new System.Windows.Forms.Label();
+            this.dtpNgayNhap        = new System.Windows.Forms.DateTimePicker();
+            this.chkConKinhDoanh    = new System.Windows.Forms.CheckBox();
+            this.picHinhAnh         = new System.Windows.Forms.PictureBox();
+            this.btnChonAnh         = new System.Windows.Forms.Button();
+
+            this.pnlButtons         = new System.Windows.Forms.FlowLayoutPanel();
+            this.btnThem            = new System.Windows.Forms.Button();
+            this.btnChinhSua        = new System.Windows.Forms.Button();
+            this.btnCapNhat         = new System.Windows.Forms.Button();
+            this.btnHuy             = new System.Windows.Forms.Button();
+            this.btnXoa             = new System.Windows.Forms.Button();
+            this.btnLamMoi          = new System.Windows.Forms.Button();
+            this.btnXuatFile        = new System.Windows.Forms.Button();
+
+            this.grpDanhSach        = new System.Windows.Forms.GroupBox();
+            this.pnlSearch          = new System.Windows.Forms.Panel();
+            this.lblTimKiem         = new System.Windows.Forms.Label();
+            this.txtTimKiem         = new System.Windows.Forms.TextBox();
+            this.lblLocLoai         = new System.Windows.Forms.Label();
+            this.cboLocLoai         = new System.Windows.Forms.ComboBox();
+            this.btnBoLoc           = new System.Windows.Forms.Button();
+            this.dgvSanPham         = new System.Windows.Forms.DataGridView();
+            this.colMaSP            = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colTenSP           = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colLoaiSP          = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colDonGia          = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSoLuong         = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colThanhTien       = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colNgayNhap        = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colConKinhDoanh    = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+
+            this.statusStrip1           = new System.Windows.Forms.StatusStrip();
+            this.lblTrangThai           = new System.Windows.Forms.ToolStripStatusLabel();
+            this.lblTongSanPham         = new System.Windows.Forms.ToolStripStatusLabel();
+            this.lblTongGiaTriTonKho    = new System.Windows.Forms.ToolStripStatusLabel();
+            this.lblDongHo              = new System.Windows.Forms.ToolStripStatusLabel();
+            this.timerDongHo            = new System.Windows.Forms.Timer(this.components);
+
+            this.grpThongTin.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numDonGia)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numSoLuong)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picHinhAnh)).BeginInit();
+            this.pnlButtons.SuspendLayout();
+            this.grpDanhSach.SuspendLayout();
+            this.pnlSearch.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvSanPham)).BeginInit();
+            this.statusStrip1.SuspendLayout();
+            this.SuspendLayout();
+
+            // ── grpThongTin ──────────────────────────────────────────
+            this.grpThongTin.Controls.Add(this.lblMaSP);
+            this.grpThongTin.Controls.Add(this.txtMaSP);
+            this.grpThongTin.Controls.Add(this.lblTenSP);
+            this.grpThongTin.Controls.Add(this.txtTenSP);
+            this.grpThongTin.Controls.Add(this.lblLoaiSP);
+            this.grpThongTin.Controls.Add(this.cboLoaiSP);
+            this.grpThongTin.Controls.Add(this.lblDonGia);
+            this.grpThongTin.Controls.Add(this.numDonGia);
+            this.grpThongTin.Controls.Add(this.lblSoLuong);
+            this.grpThongTin.Controls.Add(this.numSoLuong);
+            this.grpThongTin.Controls.Add(this.lblNgayNhap);
+            this.grpThongTin.Controls.Add(this.dtpNgayNhap);
+            this.grpThongTin.Controls.Add(this.chkConKinhDoanh);
+            this.grpThongTin.Controls.Add(this.picHinhAnh);
+            this.grpThongTin.Controls.Add(this.btnChonAnh);
+            this.grpThongTin.Controls.Add(this.pnlButtons);
+            this.grpThongTin.Dock    = System.Windows.Forms.DockStyle.Top;
+            this.grpThongTin.Font    = new System.Drawing.Font(&quot;Segoe UI&quot;, 9F, System.Drawing.FontStyle.Bold);
+            this.grpThongTin.Text    = &quot;THÔNG TIN SẢN PHẨM&quot;;
+            this.grpThongTin.Location = new System.Drawing.Point(0, 0);
+            this.grpThongTin.Size    = new System.Drawing.Size(900, 210);
+            this.grpThongTin.TabIndex = 0;
+
+            // ── Hàng 1: Mã SP | Tên SP | Loại SP ────────────────────
+            // lblMaSP
+            this.lblMaSP.AutoSize = true;
+            this.lblMaSP.Font     = new System.Drawing.Font(&quot;Segoe UI&quot;, 9F);
+            this.lblMaSP.Location = new System.Drawing.Point(12, 28);
+            this.lblMaSP.Text     = &quot;Mã SP:&quot;;
+
+            // txtMaSP
+            this.txtMaSP.Font            = new System.Drawing.Font(&quot;Segoe UI&quot;, 9.5F);
+            this.txtMaSP.Location        = new System.Drawing.Point(65, 24);
+            this.txtMaSP.Size            = new System.Drawing.Size(100, 24);
+            this.txtMaSP.PlaceholderText = &quot;VD: SP06&quot;;
+            this.txtMaSP.ReadOnly        = true;
+
+            // lblTenSP
+            this.lblTenSP.AutoSize = true;
+            this.lblTenSP.Font     = new System.Drawing.Font(&quot;Segoe UI&quot;, 9F);
+            this.lblTenSP.Location = new System.Drawing.Point(180, 28);
+            this.lblTenSP.Text     = &quot;Tên SP:&quot;;
+
+            // txtTenSP
+            this.txtTenSP.Font            = new System.Drawing.Font(&quot;Segoe UI&quot;, 9.5F);
+            this.txtTenSP.Location        = new System.Drawing.Point(233, 24);
+            this.txtTenSP.Size            = new System.Drawing.Size(210, 24);
+            this.txtTenSP.PlaceholderText = &quot;Tên sản phẩm...&quot;;
+            this.txtTenSP.ReadOnly        = true;
+
+            // lblLoaiSP
+            this.lblLoaiSP.AutoSize = true;
+            this.lblLoaiSP.Font     = new System.Drawing.Font(&quot;Segoe UI&quot;, 9F);
+            this.lblLoaiSP.Location = new System.Drawing.Point(458, 28);
+            this.lblLoaiSP.Text     = &quot;Loại:&quot;;
+
+            // cboLoaiSP
+            this.cboLoaiSP.DropDownStyle     = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboLoaiSP.Enabled           = false;
+            this.cboLoaiSP.Font              = new System.Drawing.Font(&quot;Segoe UI&quot;, 9.5F);
+            this.cboLoaiSP.Location          = new System.Drawing.Point(495, 24);
+            this.cboLoaiSP.Size              = new System.Drawing.Size(140, 25);
+            this.cboLoaiSP.Items.AddRange(new object[] {
+                &quot;Điện thoại&quot;, &quot;Laptop&quot;, &quot;Máy tính bảng&quot;, &quot;Phụ kiện&quot;, &quot;Linh kiện&quot;, &quot;Thiết bị mạng&quot;, &quot;Khác&quot; });
+
+            // ── Hàng 2: Đơn giá | Số lượng | Ngày nhập | Kinh doanh ─
+            // lblDonGia
+            this.lblDonGia.AutoSize = true;
+            this.lblDonGia.Font     = new System.Drawing.Font(&quot;Segoe UI&quot;, 9F);
+            this.lblDonGia.Location = new System.Drawing.Point(12, 68);
+            this.lblDonGia.Text     = &quot;Đơn giá:&quot;;
+
+            // numDonGia
+            this.numDonGia.Enabled             = false;
+            this.numDonGia.Font                = new System.Drawing.Font(&quot;Segoe UI&quot;, 9.5F);
+            this.numDonGia.Location            = new System.Drawing.Point(65, 64);
+            this.numDonGia.Maximum             = new decimal(new int[] { 1000000000, 0, 0, 0 });
+            this.numDonGia.Size                = new System.Drawing.Size(130, 24);
+            this.numDonGia.TextAlign           = System.Windows.Forms.HorizontalAlignment.Right;
+            this.numDonGia.ThousandsSeparator  = true;
+
+            // lblSoLuong
+            this.lblSoLuong.AutoSize = true;
+            this.lblSoLuong.Font     = new System.Drawing.Font(&quot;Segoe UI&quot;, 9F);
+            this.lblSoLuong.Location = new System.Drawing.Point(210, 68);
+            this.lblSoLuong.Text     = &quot;Số lượng:&quot;;
+
+            // numSoLuong
+            this.numSoLuong.Enabled            = false;
+            this.numSoLuong.Font               = new System.Drawing.Font(&quot;Segoe UI&quot;, 9.5F);
+            this.numSoLuong.Location           = new System.Drawing.Point(270, 64);
+            this.numSoLuong.Maximum            = new decimal(new int[] { 100000, 0, 0, 0 });
+            this.numSoLuong.Size               = new System.Drawing.Size(90, 24);
+            this.numSoLuong.TextAlign          = System.Windows.Forms.HorizontalAlignment.Right;
+            this.numSoLuong.ThousandsSeparator = true;
+
+            // lblNgayNhap
+            this.lblNgayNhap.AutoSize = true;
+            this.lblNgayNhap.Font     = new System.Drawing.Font(&quot;Segoe UI&quot;, 9F);
+            this.lblNgayNhap.Location = new System.Drawing.Point(376, 68);
+            this.lblNgayNhap.Text     = &quot;Ngày nhập:&quot;;
+
+            // dtpNgayNhap
+            this.dtpNgayNhap.Enabled      = false;
+            this.dtpNgayNhap.Font         = new System.Drawing.Font(&quot;Segoe UI&quot;, 9.5F);
+            this.dtpNgayNhap.CustomFormat = &quot;dd/MM/yyyy&quot;;
+            this.dtpNgayNhap.Format       = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dtpNgayNhap.Location     = new System.Drawing.Point(455, 64);
+            this.dtpNgayNhap.Size         = new System.Drawing.Size(120, 24);
+
+            // chkConKinhDoanh
+            this.chkConKinhDoanh.AutoSize  = true;
+            this.chkConKinhDoanh.Checked   = true;
+            this.chkConKinhDoanh.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkConKinhDoanh.Enabled   = false;
+            this.chkConKinhDoanh.Font      = new System.Drawing.Font(&quot;Segoe UI&quot;, 9.5F);
+            this.chkConKinhDoanh.ForeColor = System.Drawing.Color.DarkGreen;
+            this.chkConKinhDoanh.Location  = new System.Drawing.Point(590, 66);
+            this.chkConKinhDoanh.Text      = &quot;Đang kinh doanh&quot;;
+
+            // ── PictureBox nhỏ gọn góc phải ─────────────────────────
+            this.picHinhAnh.BackColor   = System.Drawing.Color.WhiteSmoke;
+            this.picHinhAnh.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.picHinhAnh.Location    = new System.Drawing.Point(750, 20);
+            this.picHinhAnh.Size        = new System.Drawing.Size(135, 110);
+            this.picHinhAnh.SizeMode    = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.picHinhAnh.TabStop     = false;
+
+            // btnChonAnh
+            this.btnChonAnh.Enabled      = false;
+            this.btnChonAnh.Font         = new System.Drawing.Font(&quot;Segoe UI&quot;, 8.5F);
+            this.btnChonAnh.Location     = new System.Drawing.Point(750, 135);
+            this.btnChonAnh.Size         = new System.Drawing.Size(135, 26);
+            this.btnChonAnh.Text         = &quot;📷 Chọn ảnh&quot;;
+            this.btnChonAnh.Click       += new System.EventHandler(this.btnChonAnh_Click);
+
+            // ── pnlButtons ───────────────────────────────────────────
+            this.pnlButtons.Location = new System.Drawing.Point(8, 106);
+            this.pnlButtons.Size     = new System.Drawing.Size(730, 44);
+            this.pnlButtons.Controls.Add(this.btnThem);
+            this.pnlButtons.Controls.Add(this.btnChinhSua);
+            this.pnlButtons.Controls.Add(this.btnCapNhat);
+            this.pnlButtons.Controls.Add(this.btnHuy);
+            this.pnlButtons.Controls.Add(this.btnXoa);
+            this.pnlButtons.Controls.Add(this.btnLamMoi);
+            this.pnlButtons.Controls.Add(this.btnXuatFile);
+
+            // btnThem
+            this.btnThem.BackColor  = System.Drawing.Color.FromArgb(46, 125, 50);
+            this.btnThem.FlatStyle  = System.Windows.Forms.FlatStyle.Flat;
+            this.btnThem.Font       = new System.Drawing.Font(&quot;Segoe UI&quot;, 8.5F, System.Drawing.FontStyle.Bold);
+            this.btnThem.ForeColor  = System.Drawing.Color.White;
+            this.btnThem.Size       = new System.Drawing.Size(90, 34);
+            this.btnThem.Text       = &quot;➕ Thêm&quot;;
+            this.btnThem.Cursor     = System.Windows.Forms.Cursors.Hand;
+            this.btnThem.Click     += new System.EventHandler(this.btnThem_Click);
+
+            // btnChinhSua
+            this.btnChinhSua.BackColor  = System.Drawing.Color.FromArgb(230, 126, 34);
+            this.btnChinhSua.FlatStyle  = System.Windows.Forms.FlatStyle.Flat;
+            this.btnChinhSua.Font       = new System.Drawing.Font(&quot;Segoe UI&quot;, 8.5F, System.Drawing.FontStyle.Bold);
+            this.btnChinhSua.ForeColor  = System.Drawing.Color.White;
+            this.btnChinhSua.Size       = new System.Drawing.Size(95, 34);
+            this.btnChinhSua.Text       = &quot;✏️ Sửa&quot;;
+            this.btnChinhSua.Cursor     = System.Windows.Forms.Cursors.Hand;
+            this.btnChinhSua.Click     += new System.EventHandler(this.btnChinhSua_Click);
+
+            // btnCapNhat
+            this.btnCapNhat.BackColor  = System.Drawing.Color.FromArgb(21, 101, 192);
+            this.btnCapNhat.Enabled    = false;
+            this.btnCapNhat.FlatStyle  = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCapNhat.Font       = new System.Drawing.Font(&quot;Segoe UI&quot;, 8.5F, System.Drawing.FontStyle.Bold);
+            this.btnCapNhat.ForeColor  = System.Drawing.Color.White;
+            this.btnCapNhat.Size       = new System.Drawing.Size(100, 34);
+            this.btnCapNhat.Text       = &quot;💾 Cập nhật&quot;;
+            this.btnCapNhat.Cursor     = System.Windows.Forms.Cursors.Hand;
+            this.btnCapNhat.Click     += new System.EventHandler(this.btnCapNhat_Click);
+
+            // btnHuy
+            this.btnHuy.BackColor  = System.Drawing.Color.FromArgb(120, 144, 156);
+            this.btnHuy.Enabled    = false;
+            this.btnHuy.FlatStyle  = System.Windows.Forms.FlatStyle.Flat;
+            this.btnHuy.Font       = new System.Drawing.Font(&quot;Segoe UI&quot;, 8.5F, System.Drawing.FontStyle.Bold);
+            this.btnHuy.ForeColor  = System.Drawing.Color.White;
+            this.btnHuy.Size       = new System.Drawing.Size(80, 34);
+            this.btnHuy.Text       = &quot;❌ Hủy&quot;;
+            this.btnHuy.Cursor     = System.Windows.Forms.Cursors.Hand;
+            this.btnHuy.Click     += new System.EventHandler(this.btnHuy_Click);
+
+            // btnXoa
+            this.btnXoa.BackColor  = System.Drawing.Color.FromArgb(198, 40, 40);
+            this.btnXoa.FlatStyle  = System.Windows.Forms.FlatStyle.Flat;
+            this.btnXoa.Font       = new System.Drawing.Font(&quot;Segoe UI&quot;, 8.5F, System.Drawing.FontStyle.Bold);
+            this.btnXoa.ForeColor  = System.Drawing.Color.White;
+            this.btnXoa.Size       = new System.Drawing.Size(80, 34);
+            this.btnXoa.Text       = &quot;🗑️ Xóa&quot;;
+            this.btnXoa.Cursor     = System.Windows.Forms.Cursors.Hand;
+            this.btnXoa.Click     += new System.EventHandler(this.btnXoa_Click);
+
+            // btnLamMoi
+            this.btnLamMoi.BackColor  = System.Drawing.Color.FromArgb(69, 90, 100);
+            this.btnLamMoi.FlatStyle  = System.Windows.Forms.FlatStyle.Flat;
+            this.btnLamMoi.Font       = new System.Drawing.Font(&quot;Segoe UI&quot;, 8.5F, System.Drawing.FontStyle.Bold);
+            this.btnLamMoi.ForeColor  = System.Drawing.Color.White;
+            this.btnLamMoi.Size       = new System.Drawing.Size(90, 34);
+            this.btnLamMoi.Text       = &quot;🔄 Làm mới&quot;;
+            this.btnLamMoi.Cursor     = System.Windows.Forms.Cursors.Hand;
+            this.btnLamMoi.Click     += new System.EventHandler(this.btnLamMoi_Click);
+
+            // btnXuatFile
+            this.btnXuatFile.BackColor  = System.Drawing.Color.FromArgb(106, 27, 154);
+            this.btnXuatFile.FlatStyle  = System.Windows.Forms.FlatStyle.Flat;
+            this.btnXuatFile.Font       = new System.Drawing.Font(&quot;Segoe UI&quot;, 8.5F, System.Drawing.FontStyle.Bold);
+            this.btnXuatFile.ForeColor  = System.Drawing.Color.White;
+            this.btnXuatFile.Size       = new System.Drawing.Size(100, 34);
+            this.btnXuatFile.Text       = &quot;📤 Xuất File&quot;;
+            this.btnXuatFile.Cursor     = System.Windows.Forms.Cursors.Hand;
+            this.btnXuatFile.Click     += new System.EventHandler(this.btnXuatFile_Click);
+
+            // ── grpDanhSach ──────────────────────────────────────────
+            this.grpDanhSach.Controls.Add(this.dgvSanPham);
+            this.grpDanhSach.Controls.Add(this.pnlSearch);
+            this.grpDanhSach.Dock     = System.Windows.Forms.DockStyle.Fill;
+            this.grpDanhSach.Font     = new System.Drawing.Font(&quot;Segoe UI&quot;, 9F, System.Drawing.FontStyle.Bold);
+            this.grpDanhSach.Text     = &quot;DANH SÁCH SẢN PHẨM&quot;;
+            this.grpDanhSach.Location = new System.Drawing.Point(0, 210);
+            this.grpDanhSach.Size     = new System.Drawing.Size(900, 390);
+            this.grpDanhSach.TabIndex = 1;
+
+            // pnlSearch
+            this.pnlSearch.BackColor = System.Drawing.Color.FromArgb(248, 250, 252);
+            this.pnlSearch.Controls.Add(this.lblTimKiem);
+            this.pnlSearch.Controls.Add(this.txtTimKiem);
+            this.pnlSearch.Controls.Add(this.lblLocLoai);
+            this.pnlSearch.Controls.Add(this.cboLocLoai);
+            this.pnlSearch.Controls.Add(this.btnBoLoc);
+            this.pnlSearch.Dock     = System.Windows.Forms.DockStyle.Top;
+            this.pnlSearch.Location = new System.Drawing.Point(3, 20);
+            this.pnlSearch.Size     = new System.Drawing.Size(894, 38);
+
+            // lblTimKiem
+            this.lblTimKiem.AutoSize = true;
+            this.lblTimKiem.Font     = new System.Drawing.Font(&quot;Segoe UI&quot;, 9F);
+            this.lblTimKiem.Location = new System.Drawing.Point(8, 10);
+            this.lblTimKiem.Text     = &quot;🔍 Tìm:&quot;;
+
+            // txtTimKiem
+            this.txtTimKiem.Font            = new System.Drawing.Font(&quot;Segoe UI&quot;, 9.5F);
+            this.txtTimKiem.Location        = new System.Drawing.Point(52, 7);
+            this.txtTimKiem.PlaceholderText = &quot;Gõ mã hoặc tên sản phẩm...&quot;;
+            this.txtTimKiem.Size            = new System.Drawing.Size(240, 24);
+            this.txtTimKiem.TextChanged    += new System.EventHandler(this.txtTimKiem_TextChanged);
+
+            // lblLocLoai
+            this.lblLocLoai.AutoSize = true;
+            this.lblLocLoai.Font     = new System.Drawing.Font(&quot;Segoe UI&quot;, 9F);
+            this.lblLocLoai.Location = new System.Drawing.Point(308, 10);
+            this.lblLocLoai.Text     = &quot;Loại:&quot;;
+
+            // cboLocLoai
+            this.cboLocLoai.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboLocLoai.Font          = new System.Drawing.Font(&quot;Segoe UI&quot;, 9.5F);
+            this.cboLocLoai.Location      = new System.Drawing.Point(340, 7);
+            this.cboLocLoai.Size          = new System.Drawing.Size(175, 25);
+            this.cboLocLoai.Items.AddRange(new object[] {
+                &quot;-- Tất cả loại --&quot;, &quot;Điện thoại&quot;, &quot;Laptop&quot;, &quot;Máy tính bảng&quot;,
+                &quot;Phụ kiện&quot;, &quot;Linh kiện&quot;, &quot;Thiết bị mạng&quot;, &quot;Khác&quot; });
+            this.cboLocLoai.SelectedIndexChanged += new System.EventHandler(this.cboLocLoai_SelectedIndexChanged);
+
+            // btnBoLoc
+            this.btnBoLoc.Font     = new System.Drawing.Font(&quot;Segoe UI&quot;, 8.5F);
+            this.btnBoLoc.Location = new System.Drawing.Point(528, 5);
+            this.btnBoLoc.Size     = new System.Drawing.Size(80, 28);
+            this.btnBoLoc.Text     = &quot;Bỏ lọc&quot;;
+            this.btnBoLoc.Cursor   = System.Windows.Forms.Cursors.Hand;
+            this.btnBoLoc.Click   += new System.EventHandler(this.btnBoLoc_Click);
+
+            // dgvSanPham
+            this.dgvSanPham.AutoGenerateColumns              = false;
+            this.dgvSanPham.AllowUserToAddRows               = false;
+            this.dgvSanPham.AllowUserToDeleteRows            = false;
+            this.dgvSanPham.AllowUserToResizeRows            = false;
+            this.dgvSanPham.BackgroundColor                  = System.Drawing.Color.White;
+            this.dgvSanPham.BorderStyle                      = System.Windows.Forms.BorderStyle.None;
+            this.dgvSanPham.ColumnHeadersHeight              = 30;
+            this.dgvSanPham.ColumnHeadersHeightSizeMode      = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.dgvSanPham.EnableHeadersVisualStyles        = false;
+            this.dgvSanPham.GridColor                        = System.Drawing.Color.LightGray;
+            this.dgvSanPham.MultiSelect                      = false;
+            this.dgvSanPham.ReadOnly                         = true;
+            this.dgvSanPham.RowHeadersVisible                = false;
+            this.dgvSanPham.RowTemplate.Height               = 26;
+            this.dgvSanPham.SelectionMode                    = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvSanPham.Dock                             = System.Windows.Forms.DockStyle.Fill;
+            this.dgvSanPham.Location                         = new System.Drawing.Point(3, 58);
+
+            // Header style
+            var hStyle = new System.Windows.Forms.DataGridViewCellStyle();
+            hStyle.BackColor        = System.Drawing.Color.FromArgb(37, 64, 97);
+            hStyle.ForeColor        = System.Drawing.Color.White;
+            hStyle.Font             = new System.Drawing.Font(&quot;Segoe UI&quot;, 9F, System.Drawing.FontStyle.Bold);
+            hStyle.Alignment        = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            hStyle.WrapMode         = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvSanPham.ColumnHeadersDefaultCellStyle = hStyle;
+
+            // Alternating row
+            var altStyle = new System.Windows.Forms.DataGridViewCellStyle();
+            altStyle.BackColor = System.Drawing.Color.FromArgb(245, 248, 252);
+            this.dgvSanPham.AlternatingRowsDefaultCellStyle = altStyle;
+
+            // Columns
+            var cRight = new System.Windows.Forms.DataGridViewCellStyle();
+            cRight.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            cRight.Format    = &quot;N0&quot;;
+            var cCenter = new System.Windows.Forms.DataGridViewCellStyle();
+            cCenter.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+
+            this.colMaSP.DataPropertyName      = &quot;MaSP&quot;;
+            this.colMaSP.HeaderText            = &quot;Mã SP&quot;;
+            this.colMaSP.DefaultCellStyle      = cCenter;
+            this.colMaSP.Width                 = 70;
+            this.colMaSP.ReadOnly              = true;
+
+            this.colTenSP.DataPropertyName     = &quot;TenSP&quot;;
+            this.colTenSP.HeaderText           = &quot;Tên Sản Phẩm&quot;;
+            this.colTenSP.AutoSizeMode         = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.colTenSP.MinimumWidth         = 140;
+            this.colTenSP.ReadOnly             = true;
+
+            this.colLoaiSP.DataPropertyName    = &quot;LoaiSP&quot;;
+            this.colLoaiSP.HeaderText          = &quot;Loại SP&quot;;
+            this.colLoaiSP.Width               = 110;
+            this.colLoaiSP.ReadOnly            = true;
+
+            this.colDonGia.DataPropertyName    = &quot;DonGia&quot;;
+            this.colDonGia.HeaderText          = &quot;Đơn Giá (VNĐ)&quot;;
+            this.colDonGia.DefaultCellStyle    = cRight;
+            this.colDonGia.Width               = 130;
+            this.colDonGia.ReadOnly            = true;
+
+            this.colSoLuong.DataPropertyName   = &quot;SoLuong&quot;;
+            this.colSoLuong.HeaderText         = &quot;SL Tồn&quot;;
+            this.colSoLuong.DefaultCellStyle   = cRight;
+            this.colSoLuong.Width              = 75;
+            this.colSoLuong.ReadOnly           = true;
+
+            this.colThanhTien.DataPropertyName = &quot;ThanhTien&quot;;
+            this.colThanhTien.HeaderText       = &quot;Thành Tiền (VNĐ)&quot;;
+            this.colThanhTien.DefaultCellStyle = cRight;
+            this.colThanhTien.Width            = 140;
+            this.colThanhTien.ReadOnly         = true;
+
+            this.colNgayNhap.DataPropertyName  = &quot;NgayNhap&quot;;
+            this.colNgayNhap.HeaderText        = &quot;Ngày Nhập&quot;;
+            this.colNgayNhap.DefaultCellStyle  = cCenter;
+            this.colNgayNhap.Width             = 100;
+            this.colNgayNhap.ReadOnly          = true;
+
+            this.colConKinhDoanh.DataPropertyName = &quot;ConKinhDoanh&quot;;
+            this.colConKinhDoanh.HeaderText       = &quot;KD&quot;;
+            this.colConKinhDoanh.Width            = 45;
+            this.colConKinhDoanh.ReadOnly         = true;
+
+            this.dgvSanPham.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+                this.colMaSP, this.colTenSP, this.colLoaiSP, this.colDonGia,
+                this.colSoLuong, this.colThanhTien, this.colNgayNhap, this.colConKinhDoanh });
+            this.dgvSanPham.SelectionChanged += new System.EventHandler(this.dgvSanPham_SelectionChanged);
+
+            // ── StatusStrip ──────────────────────────────────────────
+            this.statusStrip1.BackColor = System.Drawing.Color.FromArgb(240, 243, 246);
+            this.statusStrip1.Font      = new System.Drawing.Font(&quot;Segoe UI&quot;, 9F);
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+                this.lblTrangThai, this.lblTongSanPham, this.lblTongGiaTriTonKho, this.lblDongHo });
+
+            this.lblTrangThai.Spring    = true;
+            this.lblTrangThai.Text      = &quot;🟢 Sẵn sàng&quot;;
+            this.lblTrangThai.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblTrangThai.ForeColor = System.Drawing.Color.FromArgb(30, 30, 30);
+
+            this.lblTongSanPham.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
+            this.lblTongSanPham.Padding     = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lblTongSanPham.Text        = &quot;📦 0 mặt hàng | SL: 0&quot;;
+            this.lblTongSanPham.Font        = new System.Drawing.Font(&quot;Segoe UI&quot;, 9F, System.Drawing.FontStyle.Bold);
+            this.lblTongSanPham.ForeColor   = System.Drawing.Color.FromArgb(24, 43, 73);
+
+            this.lblTongGiaTriTonKho.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
+            this.lblTongGiaTriTonKho.Padding     = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lblTongGiaTriTonKho.Text        = &quot;💰 Tồn kho: 0 VNĐ&quot;;
+            this.lblTongGiaTriTonKho.Font        = new System.Drawing.Font(&quot;Segoe UI&quot;, 9F, System.Drawing.FontStyle.Bold);
+            this.lblTongGiaTriTonKho.ForeColor   = System.Drawing.Color.DarkRed;
+
+            this.lblDongHo.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
+            this.lblDongHo.Padding     = new System.Windows.Forms.Padding(6, 0, 4, 0);
+            this.lblDongHo.Text        = &quot;🕒 00:00:00&quot;;
+
+            // timerDongHo
+            this.timerDongHo.Enabled  = true;
+            this.timerDongHo.Interval = 1000;
+            this.timerDongHo.Tick    += new System.EventHandler(this.timerDongHo_Tick);
+
+            // ── Form1 ────────────────────────────────────────────────
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
+            this.AutoScaleMode       = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor           = System.Drawing.Color.White;
+            this.ClientSize          = new System.Drawing.Size(900, 630);
+            this.MinimumSize         = new System.Drawing.Size(800, 560);
+            this.Font                = new System.Drawing.Font(&quot;Segoe UI&quot;, 9.5F);
+            this.StartPosition       = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text                = &quot;Quản Lý Sản Phẩm - Nhóm 3 (StatusStrip &amp; Xuất File)&quot;;
+
+            this.Controls.Add(this.grpDanhSach);
+            this.Controls.Add(this.grpThongTin);
+            this.Controls.Add(this.statusStrip1);
+            this.Load += new System.EventHandler(this.Form1_Load);
+
+            this.grpThongTin.ResumeLayout(false);
+            this.grpThongTin.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numDonGia)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numSoLuong)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picHinhAnh)).EndInit();
+            this.pnlButtons.ResumeLayout(false);
+            this.grpDanhSach.ResumeLayout(false);
+            this.pnlSearch.ResumeLayout(false);
+            this.pnlSearch.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvSanPham)).EndInit();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
+            this.ResumeLayout(false);
+            this.PerformLayout();
+        }
+
+        #endregion
+
+        // ── Field declarations ────────────────────────────────────────
+        private System.Windows.Forms.GroupBox grpThongTin;
+        private System.Windows.Forms.Label lblMaSP;
+        private System.Windows.Forms.TextBox txtMaSP;
+        private System.Windows.Forms.Label lblTenSP;
+        private System.Windows.Forms.TextBox txtTenSP;
+        private System.Windows.Forms.Label lblLoaiSP;
+        private System.Windows.Forms.ComboBox cboLoaiSP;
+        private System.Windows.Forms.Label lblDonGia;
+        private System.Windows.Forms.NumericUpDown numDonGia;
+        private System.Windows.Forms.Label lblSoLuong;
+        private System.Windows.Forms.NumericUpDown numSoLuong;
+        private System.Windows.Forms.Label lblNgayNhap;
+        private System.Windows.Forms.DateTimePicker dtpNgayNhap;
+        private System.Windows.Forms.CheckBox chkConKinhDoanh;
+        private System.Windows.Forms.PictureBox picHinhAnh;
+        private System.Windows.Forms.Button btnChonAnh;
+
+        private System.Windows.Forms.FlowLayoutPanel pnlButtons;
+        private System.Windows.Forms.Button btnThem;
+        private System.Windows.Forms.Button btnChinhSua;
+        private System.Windows.Forms.Button btnCapNhat;
+        private System.Windows.Forms.Button btnHuy;
+        private System.Windows.Forms.Button btnXoa;
+        private System.Windows.Forms.Button btnLamMoi;
+        private System.Windows.Forms.Button btnXuatFile;
+
+        private System.Windows.Forms.GroupBox grpDanhSach;
+        private System.Windows.Forms.Panel pnlSearch;
+        private System.Windows.Forms.Label lblTimKiem;
+        private System.Windows.Forms.TextBox txtTimKiem;
+        private System.Windows.Forms.Label lblLocLoai;
+        private System.Windows.Forms.ComboBox cboLocLoai;
+        private System.Windows.Forms.Button btnBoLoc;
+        private System.Windows.Forms.DataGridView dgvSanPham;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colMaSP;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colTenSP;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colLoaiSP;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colDonGia;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSoLuong;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colThanhTien;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colNgayNhap;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn colConKinhDoanh;
+
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel lblTrangThai;
+        private System.Windows.Forms.ToolStripStatusLabel lblTongSanPham;
+        private System.Windows.Forms.ToolStripStatusLabel lblTongGiaTriTonKho;
+        private System.Windows.Forms.ToolStripStatusLabel lblDongHo;
+        private System.Windows.Forms.Timer timerDongHo;
+    }
+}
+</code></pre>
+
+<div class="page-break"></div>
+<h2>5. Tệp 5: Form1.cs (Logic nghiệp vụ, Quản lý Form State & StatusStrip)</h2>
+<pre><code class="csharp">using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Windows.Forms;
+using Lab06.Models;
+using Lab06.Services;
+
+namespace Lab06
+{
+    /// &lt;summary&gt;
+    /// Màn hình chính Quản lý sản phẩm (ProductManager)
+    /// Đề tài Lab 06 - COMP1019 Lập trình trên Windows
+    /// Báo cáo chuyên sâu NHÓM 3: StatusStrip Real-time, Thống kê tồn kho &amp; Đọc/Ghi File
+    /// &lt;/summary&gt;
+    public partial class Form1 : Form
+    {
+        // Định nghĩa các trạng thái làm việc của Form
+        private enum FormMode
+        {
+            View,       // Chế độ Xem: Tất cả thông tin chi tiết bị KHÓA, nút Cập nhật bị vô hiệu hóa
+            Add,        // Chế độ Thêm mới SP: Mở khóa các ô nhập liệu, kích hoạt nút Cập nhật
+            Edit        // Chế độ Chỉnh sửa SP: Mở khóa tất cả thông tin chi tiết, kích hoạt nút Cập nhật
+        }
+
+        private FormMode _currentMode = FormMode.View;
+
+        // Lưu trữ đường dẫn ảnh ngầm trong bộ nhớ thay vì hiển thị dạng text
+        private string _duongDanAnhHienTai = string.Empty;
+
+        // 1. Danh sách sản phẩm gốc lưu trữ trong bộ nhớ bằng BindingList (Hỗ trợ 2 chiều với DataGridView)
+        private readonly BindingList&lt;Product&gt; _danhSachGoc = new BindingList&lt;Product&gt;();
+
+        // 2. BindingSource làm cầu nối giữa BindingList và DataGridView để hỗ trợ lọc và sắp xếp
+        private readonly BindingSource _bindingSource = new BindingSource();
+
+        // Cờ kiểm soát tránh kích hoạt sự kiện SelectionChanged ngoài ý muốn khi đang nạp dữ liệu
+        private bool _isDataBinding = false;
+
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        #region Form Load &amp; Khởi tạo
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            // Thiết lập ComboBox mặc định
+            cboLoaiSP.SelectedIndex = 0;
+            cboLocLoai.SelectedIndex = 0;
+
+            // Khởi tạo và nạp dữ liệu mẫu ban đầu (tối thiểu 3 sản phẩm theo yêu cầu)
+            KhoiTaoDuLieuMau();
+
+            // Đảm bảo không bao giờ tự động phát sinh cột đường dẫn ảnh trong DataGridView
+            dgvSanPham.AutoGenerateColumns = false;
+
+            // Kết nối BindingSource với BindingList và DataGridView
+            _bindingSource.DataSource = _danhSachGoc;
+            dgvSanPham.DataSource = _bindingSource;
+
+            // Đưa Form về trạng thái mặc định: KHÓA tất cả thông tin chi tiết, nút Cập nhật bị Disable
+            ThietLapTrangThaiForm(FormMode.View);
+
+            // Nạp dữ liệu sản phẩm đầu tiên lên form (nếu có)
+            if (_bindingSource.Count &gt; 0)
+            {
+                dgvSanPham_SelectionChanged(sender, e);
+            }
+
+            // Cập nhật thống kê và trạng thái ban đầu lên StatusStrip
+            CapNhatThongKeStatusStrip(&quot;🟢 Sẵn sàng | Đã nạp thành công 5 sản phẩm mẫu&quot;);
+
+            // Hiển thị đồng hồ thời gian thực ngay lập tức
+            timerDongHo_Tick(sender, e);
+        }
+
+        /// &lt;summary&gt;
+        /// Khởi tạo dữ liệu mẫu ban đầu theo yêu cầu I của đề bài
+        /// &lt;/summary&gt;
+        private void KhoiTaoDuLieuMau()
+        {
+            _danhSachGoc.Clear();
+            List&lt;Product&gt; sampleData = SampleDataHelper.GetSampleProducts();
+            foreach (var item in sampleData)
+            {
+                _danhSachGoc.Add(item);
+            }
+        }
+
+        #endregion
+
+        #region Quản lý Luồng Trạng Thái Form (Form State Management)
+
+        /// &lt;summary&gt;
+        /// THIẾT LẬP TRẠNG THÁI FORM:
+        /// - View: Khóa tất cả thông tin chi tiết, nút Cập nhật và Hủy bị vô hiệu hóa
+        /// - Add: Mở khóa các trường, bật nút Cập nhật
+        /// - Edit: Chỉ mở khóa tất cả các thông tin chi tiết khi ấn vào nút &#x27;Chỉnh sửa&#x27;
+        /// &lt;/summary&gt;
+        private void ThietLapTrangThaiForm(FormMode mode)
+        {
+            _currentMode = mode;
+
+            switch (mode)
+            {
+                case FormMode.View:
+                    // 1. KHÓA TẤT CẢ các thông tin chi tiết để chỉ xem
+                    txtMaSP.ReadOnly = true;
+                    txtTenSP.ReadOnly = true;
+                    cboLoaiSP.Enabled = false;
+                    numDonGia.Enabled = false;
+                    numSoLuong.Enabled = false;
+                    dtpNgayNhap.Enabled = false;
+                    chkConKinhDoanh.Enabled = false;
+                    btnChonAnh.Enabled = false;
+
+                    // 2. NÚT CẬP NHẬT VÀ HỦY CHỈ CÓ THỂ SỬ DỤNG KHI ẤN &#x27;Thêm SP&#x27; HOẶC &#x27;Chỉnh sửa&#x27;
+                    btnCapNhat.Enabled = false;
+                    btnHuy.Enabled = false;
+
+                    // 3. Cho phép người dùng thao tác các nút chức năng chính
+                    btnThem.Enabled = true;
+                    btnChinhSua.Enabled = (_bindingSource.Current != null);
+                    btnXoa.Enabled = (_bindingSource.Current != null);
+                    btnLamMoi.Enabled = true;
+                    btnXuatFile.Enabled = true;
+
+                    dgvSanPham.Enabled = true;
+                    pnlSearch.Enabled = true;
+                    break;
+
+                case FormMode.Add:
+                    // 1. MỞ KHÓA các ô để nhập sản phẩm mới
+                    txtMaSP.ReadOnly = false;
+                    txtTenSP.ReadOnly = false;
+                    cboLoaiSP.Enabled = true;
+                    numDonGia.Enabled = true;
+                    numSoLuong.Enabled = true;
+                    dtpNgayNhap.Enabled = true;
+                    chkConKinhDoanh.Enabled = true;
+                    btnChonAnh.Enabled = true;
+
+                    // 2. KÍCH HOẠT nút Cập nhật và nút Hủy bỏ
+                    btnCapNhat.Enabled = true;
+                    btnHuy.Enabled = true;
+
+                    // 3. Khóa tạm thời các nút khác để tránh xung đột luồng
+                    btnThem.Enabled = false;
+                    btnChinhSua.Enabled = false;
+                    btnXoa.Enabled = false;
+
+                    dgvSanPham.Enabled = false;
+                    pnlSearch.Enabled = false;
+                    break;
+
+                case FormMode.Edit:
+                    // 1. &quot;CHỈ ĐƯỢC MỞ KHÓA TẤT CẢ CÁC THÔNG TIN CHI TIẾT ĐỂ CHỈNH SỬA KHI ẤN VÀO NÚT &#x27;CHỈNH SỬA&#x27;&quot;
+                    txtMaSP.ReadOnly = true; // Giữ mã SP làm khóa chính định danh không thay đổi
+                    txtTenSP.ReadOnly = false;
+                    cboLoaiSP.Enabled = true;
+                    numDonGia.Enabled = true;
+                    numSoLuong.Enabled = true;
+                    dtpNgayNhap.Enabled = true;
+                    chkConKinhDoanh.Enabled = true;
+                    btnChonAnh.Enabled = true;
+
+                    // 2. KÍCH HOẠT nút Cập nhật và nút Hủy bỏ
+                    btnCapNhat.Enabled = true;
+                    btnHuy.Enabled = true;
+
+                    // 3. Khóa tạm thời các nút khác
+                    btnThem.Enabled = false;
+                    btnChinhSua.Enabled = false;
+                    btnXoa.Enabled = false;
+
+                    dgvSanPham.Enabled = false;
+                    pnlSearch.Enabled = false;
+                    break;
+            }
+        }
+
+        #endregion
+
+        #region Chuyên sâu NHÓM 3: StatusStrip Real-time &amp; Thống kê tồn kho
+
+        /// &lt;summary&gt;
+        /// CẬP NHẬT TRẠNG THÁI VÀ THỐNG KÊ TỒN KHO THEO THỜI GIAN THỰC LÊN STATUSSTRIP
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;thongDiepTrangThai&quot;&gt;Thông điệp hành động vừa thực hiện&lt;/param&gt;
+        private void CapNhatThongKeStatusStrip(string? thongDiepTrangThai = null)
+        {
+            // 1. Cập nhật thông điệp trạng thái thao tác real-time
+            if (!string.IsNullOrEmpty(thongDiepTrangThai))
+            {
+                lblTrangThai.Text = thongDiepTrangThai;
+            }
+
+            // 2. Thuật toán tính toán chỉ số thống kê tồn kho từ danh sách hiện tại
+            // Công thức: Tổng giá trị = sum(Số lượng * Đơn giá)
+            int soMatHang = _bindingSource.Count;
+            int tongSoLuongTon = 0;
+            decimal tongGiaTriTonKho = 0;
+
+            foreach (Product sp in _bindingSource)
+            {
+                tongSoLuongTon += sp.SoLuong;
+                decimal thanhTien = sp.SoLuong * sp.DonGia;
+                tongGiaTriTonKho += thanhTien;
+            }
+
+            // 3. Hiển thị trực tiếp các chỉ số thống kê lên các nhãn của StatusStrip
+            lblTongSanPham.Text = $&quot;📦 {soMatHang} mặt hàng | SL: {tongSoLuongTon:N0}&quot;;
+            lblTongGiaTriTonKho.Text = $&quot;💰 Tồn kho: {tongGiaTriTonKho:N0} VNĐ&quot;;
+        }
+
+        /// &lt;summary&gt;
+        /// Timer cập nhật đồng hồ thời gian thực mỗi giây góc phải StatusStrip
+        /// &lt;/summary&gt;
+        private void timerDongHo_Tick(object sender, EventArgs e)
+        {
+            lblDongHo.Text = $&quot;🕒 {DateTime.Now:dd/MM/yyyy HH:mm:ss}&quot;;
+        }
+
+        #endregion
+
+        #region Xử lý các Nút Thao tác: Thêm SP, Chỉnh sửa, Cập nhật, Hủy, Xóa, Làm mới
+
+        /// &lt;summary&gt;
+        /// Khi bấm &quot;Thêm SP&quot;: Xóa trắng form, mở khóa nhập liệu, kích hoạt nút Cập nhật
+        /// &lt;/summary&gt;
+        private void btnThem_Click(object sender, EventArgs e)
+        {
+            XoaTrangFormNhapLieu();
+            ThietLapTrangThaiForm(FormMode.Add);
+            txtMaSP.Focus();
+            CapNhatThongKeStatusStrip(&quot;📝 Đang ở chế độ Thêm mới SP. Vui lòng nhập thông tin rồi bấm &#x27;Cập nhật&#x27; để lưu&quot;);
+        }
+
+        /// &lt;summary&gt;
+        /// Nút &quot;Chỉnh sửa&quot;: MỞ KHÓA TẤT CẢ CÁC THÔNG TIN CHI TIẾT để sửa lại thông tin của các mặt hàng
+        /// &lt;/summary&gt;
+        private void btnChinhSua_Click(object sender, EventArgs e)
+        {
+            if (_bindingSource.Current is not Product spDangChon)
+            {
+                MessageBox.Show(&quot;Vui lòng chọn một mặt hàng trong danh sách trước khi bấm &#x27;Chỉnh sửa&#x27;!&quot;, &quot;Chưa chọn sản phẩm&quot;, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Mở khóa tất cả các thông tin chi tiết và kích hoạt nút Cập nhật
+            ThietLapTrangThaiForm(FormMode.Edit);
+            txtTenSP.Focus();
+            CapNhatThongKeStatusStrip($&quot;✏️ Đang chỉnh sửa SP [{spDangChon.MaSP} - {spDangChon.TenSP}]. Chỉnh sửa xong bấm &#x27;Cập nhật&#x27; để lưu lại&quot;);
+        }
+
+        /// &lt;summary&gt;
+        /// NÚT &quot;CẬP NHẬT&quot;: CHỈ CÓ THỂ SỬ DỤNG KHI ẤN VÀO &#x27;Thêm SP&#x27; HOẶC &#x27;Chỉnh sửa&#x27;
+        /// Thực hiện lưu dữ liệu vào hệ thống và khóa lại form
+        /// &lt;/summary&gt;
+        private void btnCapNhat_Click(object sender, EventArgs e)
+        {
+            if (_currentMode == FormMode.Add)
+            {
+                // XỬ LÝ LƯU KHI THÊM MỚI SẢN PHẨM
+                string maSP = txtMaSP.Text.Trim();
+                string tenSP = txtTenSP.Text.Trim();
+                string loaiSP = cboLoaiSP.Text;
+                decimal donGia = numDonGia.Value;
+                int soLuong = (int)numSoLuong.Value;
+                DateTime ngayNhap = dtpNgayNhap.Value;
+                bool conKinhDoanh = chkConKinhDoanh.Checked;
+                string duongDanAnh = _duongDanAnhHienTai;
+
+                // Validation dữ liệu
+                if (string.IsNullOrEmpty(maSP))
+                {
+                    MessageBox.Show(&quot;Vui lòng nhập Mã sản phẩm!&quot;, &quot;Lỗi nhập liệu&quot;, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtMaSP.Focus();
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(tenSP))
+                {
+                    MessageBox.Show(&quot;Vui lòng nhập Tên sản phẩm!&quot;, &quot;Lỗi nhập liệu&quot;, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtTenSP.Focus();
+                    return;
+                }
+
+                // Kiểm tra trùng mã sản phẩm
+                foreach (var sp in _danhSachGoc)
+                {
+                    if (sp.MaSP.Equals(maSP, StringComparison.OrdinalIgnoreCase))
+                    {
+                        MessageBox.Show($&quot;Mã sản phẩm [{maSP}] đã tồn tại trong hệ thống. Vui lòng chọn mã khác!&quot;, &quot;Trùng mã sản phẩm&quot;, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        txtMaSP.Focus();
+                        return;
+                    }
+                }
+
+                if (donGia &lt;= 0)
+                {
+                    MessageBox.Show(&quot;Đơn giá sản phẩm phải lớn hơn 0 VNĐ!&quot;, &quot;Lỗi nhập liệu&quot;, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    numDonGia.Focus();
+                    return;
+                }
+
+                // Tạo đối tượng và thêm vào danh sách
+                Product spMoi = new Product(maSP, tenSP, loaiSP, donGia, soLuong, ngayNhap, conKinhDoanh, duongDanAnh);
+                _danhSachGoc.Add(spMoi);
+
+                if (_bindingSource.DataSource != _danhSachGoc)
+                {
+                    ResetBoLocTimKiem();
+                }
+
+                _bindingSource.Position = _danhSachGoc.IndexOf(spMoi);
+
+                // Khóa lại tất cả thông tin chi tiết và tắt nút Cập nhật
+                ThietLapTrangThaiForm(FormMode.View);
+
+                CapNhatThongKeStatusStrip($&quot;✅ Vừa thêm mới SP [{spMoi.MaSP} - {spMoi.TenSP}] thành công&quot;);
+                MessageBox.Show($&quot;Đã thêm mới sản phẩm [{spMoi.TenSP}] thành công!&quot;, &quot;Thông báo&quot;, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else if (_currentMode == FormMode.Edit)
+            {
+                // XỬ LÝ LƯU KHI CHỈNH SỬA SẢN PHẨM
+                if (_bindingSource.Current is not Product spDangChon)
+                {
+                    MessageBox.Show(&quot;Không tìm thấy sản phẩm cần cập nhật!&quot;, &quot;Lỗi&quot;, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                string tenSP = txtTenSP.Text.Trim();
+                if (string.IsNullOrEmpty(tenSP))
+                {
+                    MessageBox.Show(&quot;Tên sản phẩm không được để trống!&quot;, &quot;Lỗi nhập liệu&quot;, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtTenSP.Focus();
+                    return;
+                }
+
+                if (numDonGia.Value &lt;= 0)
+                {
+                    MessageBox.Show(&quot;Đơn giá sản phẩm phải lớn hơn 0 VNĐ!&quot;, &quot;Lỗi nhập liệu&quot;, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    numDonGia.Focus();
+                    return;
+                }
+
+                // Cập nhật thông tin vào đối tượng
+                spDangChon.TenSP = tenSP;
+                spDangChon.LoaiSP = cboLoaiSP.Text;
+                spDangChon.DonGia = numDonGia.Value;
+                spDangChon.SoLuong = (int)numSoLuong.Value;
+                spDangChon.NgayNhap = dtpNgayNhap.Value;
+                spDangChon.ConKinhDoanh = chkConKinhDoanh.Checked;
+                spDangChon.DuongDanAnh = _duongDanAnhHienTai;
+
+                // Đồng bộ cập nhật lên DataGridView
+                _bindingSource.ResetBindings(false);
+
+                // Khóa lại tất cả thông tin chi tiết và tắt nút Cập nhật
+                ThietLapTrangThaiForm(FormMode.View);
+
+                CapNhatThongKeStatusStrip($&quot;✏️ Đã cập nhật SP [{spDangChon.MaSP} - {spDangChon.TenSP}] thành công&quot;);
+                MessageBox.Show($&quot;Đã cập nhật thông tin sản phẩm [{spDangChon.MaSP}] thành công!&quot;, &quot;Thông báo&quot;, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        /// &lt;summary&gt;
+        /// Nút &quot;Hủy bỏ&quot;: Hủy bỏ thao tác Thêm hoặc Chỉnh sửa, khóa lại form và phục hồi dữ liệu ban đầu
+        /// &lt;/summary&gt;
+        private void btnHuy_Click(object sender, EventArgs e)
+        {
+            ThietLapTrangThaiForm(FormMode.View);
+
+            // Nạp lại dữ liệu của dòng đang chọn
+            if (_bindingSource.Current is Product sp)
+            {
+                HienThiThongTinSanPhamLenForm(sp);
+            }
+            else
+            {
+                XoaTrangFormNhapLieu();
+            }
+
+            CapNhatThongKeStatusStrip(&quot;🟢 Đã hủy thao tác, quay về chế độ chỉ xem&quot;);
+        }
+
+        /// &lt;summary&gt;
+        /// Xóa sản phẩm đang chọn khỏi hệ thống
+        /// &lt;/summary&gt;
+        private void btnXoa_Click(object sender, EventArgs e)
+        {
+            if (_bindingSource.Current is not Product spDangChon)
+            {
+                MessageBox.Show(&quot;Vui lòng chọn sản phẩm cần xóa từ danh sách!&quot;, &quot;Chưa chọn sản phẩm&quot;, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            DialogResult confirm = MessageBox.Show(
+                $&quot;Bạn có chắc chắn muốn xóa sản phẩm:\nMã SP: {spDangChon.MaSP}\nTên SP: {spDangChon.TenSP}\n\nThao tác này không thể hoàn tác!&quot;,
+                &quot;Xác nhận xóa sản phẩm&quot;,
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (confirm == DialogResult.Yes)
+            {
+                string maSPDaXoa = spDangChon.MaSP;
+                string tenSPDaXoa = spDangChon.TenSP;
+
+                _danhSachGoc.Remove(spDangChon);
+
+                if (_bindingSource.DataSource is BindingList&lt;Product&gt; danhSachLoc &amp;&amp; danhSachLoc != _danhSachGoc)
+                {
+                    danhSachLoc.Remove(spDangChon);
+                }
+
+                if (_bindingSource.Count &gt; 0)
+                {
+                    dgvSanPham_SelectionChanged(sender, e);
+                }
+                else
+                {
+                    XoaTrangFormNhapLieu();
+                }
+
+                ThietLapTrangThaiForm(FormMode.View);
+                CapNhatThongKeStatusStrip($&quot;🗑️ Đã xóa sản phẩm [{maSPDaXoa} - {tenSPDaXoa}] khỏi hệ thống&quot;);
+                MessageBox.Show($&quot;Đã xóa sản phẩm [{maSPDaXoa}] thành công!&quot;, &quot;Thông báo&quot;, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        /// &lt;summary&gt;
+        /// Làm mới: Khôi phục danh sách hiển thị gốc và đưa Form về chế độ Xem
+        /// &lt;/summary&gt;
+        private void btnLamMoi_Click(object sender, EventArgs e)
+        {
+            ResetBoLocTimKiem();
+            ThietLapTrangThaiForm(FormMode.View);
+
+            if (_bindingSource.Count &gt; 0)
+            {
+                dgvSanPham_SelectionChanged(sender, e);
+            }
+            else
+            {
+                XoaTrangFormNhapLieu();
+            }
+
+            CapNhatThongKeStatusStrip(&quot;🔄 Đã làm mới các trường và hiển thị toàn bộ danh sách&quot;);
+        }
+
+        private void XoaTrangFormNhapLieu()
+        {
+            _isDataBinding = true;
+            try
+            {
+                txtMaSP.Clear();
+                txtTenSP.Clear();
+                if (cboLoaiSP.Items.Count &gt; 0)
+                {
+                    cboLoaiSP.SelectedIndex = 0;
+                }
+                numDonGia.Value = 0;
+                numSoLuong.Value = 0;
+                dtpNgayNhap.Value = DateTime.Now;
+                chkConKinhDoanh.Checked = true;
+                _duongDanAnhHienTai = string.Empty;
+
+                GiaiPhongVaXoaHinhAnh();
+                dgvSanPham.ClearSelection();
+            }
+            finally
+            {
+                _isDataBinding = false;
+            }
+        }
+
+        #endregion
+
+        #region DataGridView Events &amp; Hiển thị Chi tiết
+
+        /// &lt;summary&gt;
+        /// Khi người dùng chọn dòng trên DataGridView, hiển thị dữ liệu chi tiết lên form
+        /// &lt;/summary&gt;
+        private void dgvSanPham_SelectionChanged(object sender, EventArgs e)
+        {
+            if (_isDataBinding) return;
+
+            // Chỉ cập nhật hiển thị khi đang ở chế độ xem (View)
+            if (_currentMode != FormMode.View) return;
+
+            if (_bindingSource.Current is Product sp)
+            {
+                HienThiThongTinSanPhamLenForm(sp);
+                btnChinhSua.Enabled = true;
+                btnXoa.Enabled = true;
+                lblTrangThai.Text = $&quot;🔍 Đang xem chi tiết SP: [{sp.MaSP}] - {sp.TenSP}&quot;;
+            }
+            else
+            {
+                btnChinhSua.Enabled = false;
+                btnXoa.Enabled = false;
+            }
+        }
+
+        private void HienThiThongTinSanPhamLenForm(Product sp)
+        {
+            _isDataBinding = true;
+            try
+            {
+                txtMaSP.Text = sp.MaSP;
+                txtTenSP.Text = sp.TenSP;
+                cboLoaiSP.Text = sp.LoaiSP;
+                numDonGia.Value = sp.DonGia;
+                numSoLuong.Value = sp.SoLuong;
+                dtpNgayNhap.Value = sp.NgayNhap;
+                chkConKinhDoanh.Checked = sp.ConKinhDoanh;
+                _duongDanAnhHienTai = sp.DuongDanAnh;
+
+                HienThiHinhAnh(_duongDanAnhHienTai);
+            }
+            finally
+            {
+                _isDataBinding = false;
+            }
+        }
+
+        #endregion
+
+        #region Tìm kiếm &amp; Lọc sản phẩm Real-time
+
+        private void txtTimKiem_TextChanged(object sender, EventArgs e)
+        {
+            ThucHienLocVaTimKiem();
+        }
+
+        private void cboLocLoai_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ThucHienLocVaTimKiem();
+        }
+
+        private void btnBoLoc_Click(object sender, EventArgs e)
+        {
+            ResetBoLocTimKiem();
+            CapNhatThongKeStatusStrip(&quot;🔄 Đã bỏ lọc, hiển thị toàn bộ sản phẩm&quot;);
+        }
+
+        private void ThucHienLocVaTimKiem()
+        {
+            // Nếu đang trong quá trình Thêm hoặc Sửa thì không kích hoạt lọc
+            if (_currentMode != FormMode.View) return;
+
+            string tuKhoa = txtTimKiem.Text.Trim().ToLower();
+            string loaiLoc = cboLocLoai.SelectedItem?.ToString() ?? &quot;-- Tất cả loại sản phẩm --&quot;;
+
+            if (string.IsNullOrEmpty(tuKhoa) &amp;&amp; (loaiLoc == &quot;-- Tất cả loại sản phẩm --&quot; || cboLocLoai.SelectedIndex == 0))
+            {
+                if (_bindingSource.DataSource != _danhSachGoc)
+                {
+                    _bindingSource.DataSource = _danhSachGoc;
+                    CapNhatThongKeStatusStrip(&quot;🟢 Đang hiển thị toàn bộ danh sách sản phẩm&quot;);
+                }
+                return;
+            }
+
+            BindingList&lt;Product&gt; ketQuaLoc = new BindingList&lt;Product&gt;();
+
+            foreach (var sp in _danhSachGoc)
+            {
+                bool matchLoai = (loaiLoc == &quot;-- Tất cả loại sản phẩm --&quot;) ||
+                                 sp.LoaiSP.Equals(loaiLoc, StringComparison.OrdinalIgnoreCase);
+
+                bool matchTuKhoa = string.IsNullOrEmpty(tuKhoa) ||
+                                   sp.TenSP.ToLower().Contains(tuKhoa) ||
+                                   sp.MaSP.ToLower().Contains(tuKhoa);
+
+                if (matchLoai &amp;&amp; matchTuKhoa)
+                {
+                    ketQuaLoc.Add(sp);
+                }
+            }
+
+            _bindingSource.DataSource = ketQuaLoc;
+            CapNhatThongKeStatusStrip($&quot;🔎 Tìm thấy {ketQuaLoc.Count} sản phẩm phù hợp&quot;);
+        }
+
+        private void ResetBoLocTimKiem()
+        {
+            txtTimKiem.Clear();
+            if (cboLocLoai.Items.Count &gt; 0)
+            {
+                cboLocLoai.SelectedIndex = 0;
+            }
+            _bindingSource.DataSource = _danhSachGoc;
+            CapNhatThongKeStatusStrip();
+        }
+
+        #endregion
+
+        #region Xử lý Hình ảnh sản phẩm (PictureBox)
+
+        private void btnChonAnh_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.Title = &quot;Chọn hình ảnh cho sản phẩm&quot;;
+                ofd.Filter = &quot;File hình ảnh (*.jpg;*.jpeg;*.png;*.bmp;*.gif)|*.jpg;*.jpeg;*.png;*.bmp;*.gif|Tất cả file (*.*)|*.*&quot;;
+
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    _duongDanAnhHienTai = ofd.FileName;
+                    HienThiHinhAnh(_duongDanAnhHienTai);
+                    lblTrangThai.Text = &quot;📷 Đã chọn ảnh minh họa cho sản phẩm&quot;;
+                }
+            }
+        }
+
+        private void HienThiHinhAnh(string duongDanAnh)
+        {
+            GiaiPhongVaXoaHinhAnh();
+
+            if (!string.IsNullOrEmpty(duongDanAnh) &amp;&amp; File.Exists(duongDanAnh))
+            {
+                try
+                {
+                    // Dùng MemoryStream đọc ảnh để tránh khóa file trên ổ cứng
+                    byte[] imageBytes = File.ReadAllBytes(duongDanAnh);
+                    using (MemoryStream ms = new MemoryStream(imageBytes))
+                    {
+                        picHinhAnh.Image = Image.FromStream(ms);
+                    }
+                }
+                catch
+                {
+                    picHinhAnh.Image = null;
+                }
+            }
+        }
+
+        private void GiaiPhongVaXoaHinhAnh()
+        {
+            if (picHinhAnh.Image != null)
+            {
+                picHinhAnh.Image.Dispose();
+                picHinhAnh.Image = null;
+            }
+        }
+
+        #endregion
+
+        #region Chuyên sâu NHÓM 3: Xuất File với SaveFileDialog và StreamWriter
+
+        private void btnXuatFile_Click(object sender, EventArgs e)
+        {
+            if (_bindingSource.Count == 0)
+            {
+                MessageBox.Show(&quot;Hiện không có sản phẩm nào trong danh sách để xuất file!&quot;, &quot;Danh sách rỗng&quot;, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            using (SaveFileDialog sfd = new SaveFileDialog())
+            {
+                sfd.Title = &quot;Xuất danh sách sản phẩm ra File - Nhóm 3&quot;;
+                sfd.Filter = &quot;File văn bản báo cáo (*.txt)|*.txt|File bảng tính Excel (*.csv)|*.csv&quot;;
+                sfd.FilterIndex = 1;
+                sfd.DefaultExt = &quot;txt&quot;;
+                sfd.FileName = $&quot;BaoCaoTonKho_{DateTime.Now:yyyyMMdd_HHmmss}&quot;;
+
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        string duongDanLuu = sfd.FileName;
+                        string duoiFile = Path.GetExtension(duongDanLuu).ToLower();
+
+                        var danhSachXuat = new List&lt;Product&gt;();
+                        foreach (Product item in _bindingSource)
+                        {
+                            danhSachXuat.Add(item);
+                        }
+
+                        if (duoiFile == &quot;.csv&quot;)
+                        {
+                            ProductFileService.ExportToCsv(duongDanLuu, danhSachXuat);
+                        }
+                        else
+                        {
+                            ProductFileService.ExportToTxt(duongDanLuu, danhSachXuat);
+                        }
+
+                        CapNhatThongKeStatusStrip($&quot;💾 Đã xuất file thành công: {Path.GetFileName(duongDanLuu)}&quot;);
+
+                        DialogResult hoiMoFile = MessageBox.Show(
+                            $&quot;Xuất dữ liệu thành công!\n\nĐường dẫn: {duongDanLuu}\nTổng số mặt hàng đã xuất: {danhSachXuat.Count}\n\nBạn có muốn mở file vừa xuất ngay bây giờ không?&quot;,
+                            &quot;Xuất file thành công&quot;,
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Information);
+
+                        if (hoiMoFile == DialogResult.Yes)
+                        {
+                            Process.Start(new ProcessStartInfo(duongDanLuu) { UseShellExecute = true });
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($&quot;Đã xảy ra lỗi khi ghi file: {ex.Message}&quot;, &quot;Lỗi xuất file&quot;, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        CapNhatThongKeStatusStrip($&quot;❌ Lỗi xuất file: {ex.Message}&quot;);
+                    }
+                }
+            }
+        }
+
+        #endregion
+    }
+}
+</code></pre>
+
+<div class="page-break"></div>
+<h2>6. Tệp 6: Program.cs & Lab06.csproj</h2>
+<pre><code class="csharp">namespace Lab06
+{
+    internal static class Program
+    {
+        /// &lt;summary&gt;
+        ///  The main entry point for the application.
+        /// &lt;/summary&gt;
+        [STAThread]
+        static void Main()
+        {
+            // To customize application configuration such as set high DPI settings or default font,
+            // see https://aka.ms/applicationconfiguration.
+            ApplicationConfiguration.Initialize();
+            Application.Run(new Form1());
+        }
+    }
+}</code></pre>
+<pre><code class="xml">&lt;Project Sdk=&quot;Microsoft.NET.Sdk&quot;&gt;
+
+  &lt;PropertyGroup&gt;
+    &lt;OutputType&gt;WinExe&lt;/OutputType&gt;
+    &lt;TargetFramework&gt;net9.0-windows&lt;/TargetFramework&gt;
+    &lt;Nullable&gt;enable&lt;/Nullable&gt;
+    &lt;UseWindowsForms&gt;true&lt;/UseWindowsForms&gt;
+    &lt;ImplicitUsings&gt;enable&lt;/ImplicitUsings&gt;
+  &lt;/PropertyGroup&gt;
+
+&lt;/Project&gt;</code></pre>
+
+</body>
+</html>

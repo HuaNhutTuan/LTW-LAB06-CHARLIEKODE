@@ -10,33 +10,25 @@ using Lab06.Services;
 
 namespace Lab06
 {
-    /// <summary>
-    /// Màn hình chính Quản lý sản phẩm (ProductManager)
-    /// Đề tài Lab 06 - COMP1019 Lập trình trên Windows
-    /// Báo cáo chuyên sâu NHÓM 3: StatusStrip Real-time, Thống kê tồn kho & Đọc/Ghi File
-    /// </summary>
+
     public partial class Form1 : Form
     {
-        // Định nghĩa các trạng thái làm việc của Form
+
         private enum FormMode
         {
-            View,       // Chế độ Xem: Tất cả thông tin chi tiết bị KHÓA, nút Cập nhật bị vô hiệu hóa
-            Add,        // Chế độ Thêm mới SP: Mở khóa các ô nhập liệu, kích hoạt nút Cập nhật
-            Edit        // Chế độ Chỉnh sửa SP: Mở khóa tất cả thông tin chi tiết, kích hoạt nút Cập nhật
+            View,
+            Add,
+            Edit
         }
 
         private FormMode _currentMode = FormMode.View;
 
-        // Lưu trữ đường dẫn ảnh ngầm trong bộ nhớ thay vì hiển thị dạng text
         private string _duongDanAnhHienTai = string.Empty;
 
-        // 1. Danh sách sản phẩm gốc lưu trữ trong bộ nhớ bằng BindingList (Hỗ trợ 2 chiều với DataGridView)
         private readonly BindingList<Product> _danhSachGoc = new BindingList<Product>();
 
-        // 2. BindingSource làm cầu nối giữa BindingList và DataGridView để hỗ trợ lọc và sắp xếp
         private readonly BindingSource _bindingSource = new BindingSource();
 
-        // Cờ kiểm soát tránh kích hoạt sự kiện SelectionChanged ngoài ý muốn khi đang nạp dữ liệu
         private bool _isDataBinding = false;
 
         public Form1()
@@ -48,39 +40,30 @@ namespace Lab06
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            // Thiết lập ComboBox mặc định
+
             cboLoaiSP.SelectedIndex = 0;
             cboLocLoai.SelectedIndex = 0;
 
-            // Khởi tạo và nạp dữ liệu mẫu ban đầu (tối thiểu 3 sản phẩm theo yêu cầu)
             KhoiTaoDuLieuMau();
 
-            // Đảm bảo không bao giờ tự động phát sinh cột đường dẫn ảnh trong DataGridView
             dgvSanPham.AutoGenerateColumns = false;
+            KiemTraVaKhoiTaoCotDataGridView();
 
-            // Kết nối BindingSource với BindingList và DataGridView
             _bindingSource.DataSource = _danhSachGoc;
             dgvSanPham.DataSource = _bindingSource;
 
-            // Đưa Form về trạng thái mặc định: KHÓA tất cả thông tin chi tiết, nút Cập nhật bị Disable
             ThietLapTrangThaiForm(FormMode.View);
 
-            // Nạp dữ liệu sản phẩm đầu tiên lên form (nếu có)
             if (_bindingSource.Count > 0)
             {
                 dgvSanPham_SelectionChanged(sender, e);
             }
 
-            // Cập nhật thống kê và trạng thái ban đầu lên StatusStrip
-            CapNhatThongKeStatusStrip("🟢 Sẵn sàng | Đã nạp thành công 5 sản phẩm mẫu");
+            CapNhatThongKeStatusStrip("Sẵn sàng | Đã nạp thành công 5 sản phẩm mẫu");
 
-            // Hiển thị đồng hồ thời gian thực ngay lập tức
             timerDongHo_Tick(sender, e);
         }
 
-        /// <summary>
-        /// Khởi tạo dữ liệu mẫu ban đầu theo yêu cầu I của đề bài
-        /// </summary>
         private void KhoiTaoDuLieuMau()
         {
             _danhSachGoc.Clear();
@@ -91,16 +74,40 @@ namespace Lab06
             }
         }
 
+        private void KiemTraVaKhoiTaoCotDataGridView()
+        {
+            if (dgvSanPham.Columns.Count > 0) return;
+
+            colMaSP = new DataGridViewTextBoxColumn { DataPropertyName = "MaSP", HeaderText = "Mã SP", Width = 90 };
+            colTenSP = new DataGridViewTextBoxColumn { DataPropertyName = "TenSP", HeaderText = "Tên Sản Phẩm", AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill };
+            colLoaiSP = new DataGridViewTextBoxColumn { DataPropertyName = "LoaiSP", HeaderText = "Loại SP", Width = 120 };
+            colDonGia = new DataGridViewTextBoxColumn { DataPropertyName = "DonGia", HeaderText = "Đơn Giá (VNĐ)", Width = 130 };
+            colDonGia.DefaultCellStyle.Format = "N0";
+            colDonGia.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+
+            colSoLuong = new DataGridViewTextBoxColumn { DataPropertyName = "SoLuong", HeaderText = "SL Tồn", Width = 90 };
+            colSoLuong.DefaultCellStyle.Format = "N0";
+            colSoLuong.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+
+            colThanhTien = new DataGridViewTextBoxColumn { DataPropertyName = "ThanhTien", HeaderText = "Thành Tiền (VNĐ)", Width = 140 };
+            colThanhTien.DefaultCellStyle.Format = "N0";
+            colThanhTien.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+
+            colNgayNhap = new DataGridViewTextBoxColumn { DataPropertyName = "NgayNhap", HeaderText = "Ngày Nhập", Width = 110 };
+            colNgayNhap.DefaultCellStyle.Format = "dd/MM/yyyy";
+            colNgayNhap.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            colConKinhDoanh = new DataGridViewCheckBoxColumn { DataPropertyName = "ConKinhDoanh", HeaderText = "Kinh Doanh", Width = 90 };
+
+            dgvSanPham.Columns.AddRange(new DataGridViewColumn[] {
+                colMaSP, colTenSP, colLoaiSP, colDonGia, colSoLuong, colThanhTien, colNgayNhap, colConKinhDoanh
+            });
+        }
+
         #endregion
 
         #region Quản lý Luồng Trạng Thái Form (Form State Management)
 
-        /// <summary>
-        /// THIẾT LẬP TRẠNG THÁI FORM:
-        /// - View: Khóa tất cả thông tin chi tiết, nút Cập nhật và Hủy bị vô hiệu hóa
-        /// - Add: Mở khóa các trường, bật nút Cập nhật
-        /// - Edit: Chỉ mở khóa tất cả các thông tin chi tiết khi ấn vào nút 'Chỉnh sửa'
-        /// </summary>
         private void ThietLapTrangThaiForm(FormMode mode)
         {
             _currentMode = mode;
@@ -108,7 +115,7 @@ namespace Lab06
             switch (mode)
             {
                 case FormMode.View:
-                    // 1. KHÓA TẤT CẢ các thông tin chi tiết để chỉ xem
+
                     txtMaSP.ReadOnly = true;
                     txtTenSP.ReadOnly = true;
                     cboLoaiSP.Enabled = false;
@@ -118,11 +125,9 @@ namespace Lab06
                     chkConKinhDoanh.Enabled = false;
                     btnChonAnh.Enabled = false;
 
-                    // 2. NÚT CẬP NHẬT VÀ HỦY CHỈ CÓ THỂ SỬ DỤNG KHI ẤN 'Thêm SP' HOẶC 'Chỉnh sửa'
                     btnCapNhat.Enabled = false;
                     btnHuy.Enabled = false;
 
-                    // 3. Cho phép người dùng thao tác các nút chức năng chính
                     btnThem.Enabled = true;
                     btnChinhSua.Enabled = (_bindingSource.Current != null);
                     btnXoa.Enabled = (_bindingSource.Current != null);
@@ -134,7 +139,7 @@ namespace Lab06
                     break;
 
                 case FormMode.Add:
-                    // 1. MỞ KHÓA các ô để nhập sản phẩm mới
+
                     txtMaSP.ReadOnly = false;
                     txtTenSP.ReadOnly = false;
                     cboLoaiSP.Enabled = true;
@@ -144,11 +149,9 @@ namespace Lab06
                     chkConKinhDoanh.Enabled = true;
                     btnChonAnh.Enabled = true;
 
-                    // 2. KÍCH HOẠT nút Cập nhật và nút Hủy bỏ
                     btnCapNhat.Enabled = true;
                     btnHuy.Enabled = true;
 
-                    // 3. Khóa tạm thời các nút khác để tránh xung đột luồng
                     btnThem.Enabled = false;
                     btnChinhSua.Enabled = false;
                     btnXoa.Enabled = false;
@@ -158,8 +161,8 @@ namespace Lab06
                     break;
 
                 case FormMode.Edit:
-                    // 1. "CHỈ ĐƯỢC MỞ KHÓA TẤT CẢ CÁC THÔNG TIN CHI TIẾT ĐỂ CHỈNH SỬA KHI ẤN VÀO NÚT 'CHỈNH SỬA'"
-                    txtMaSP.ReadOnly = true; // Giữ mã SP làm khóa chính định danh không thay đổi
+
+                    txtMaSP.ReadOnly = true;
                     txtTenSP.ReadOnly = false;
                     cboLoaiSP.Enabled = true;
                     numDonGia.Enabled = true;
@@ -168,11 +171,9 @@ namespace Lab06
                     chkConKinhDoanh.Enabled = true;
                     btnChonAnh.Enabled = true;
 
-                    // 2. KÍCH HOẠT nút Cập nhật và nút Hủy bỏ
                     btnCapNhat.Enabled = true;
                     btnHuy.Enabled = true;
 
-                    // 3. Khóa tạm thời các nút khác
                     btnThem.Enabled = false;
                     btnChinhSua.Enabled = false;
                     btnXoa.Enabled = false;
@@ -187,20 +188,12 @@ namespace Lab06
 
         #region Chuyên sâu NHÓM 3: StatusStrip Real-time & Thống kê tồn kho
 
-        /// <summary>
-        /// CẬP NHẬT TRẠNG THÁI VÀ THỐNG KÊ TỒN KHO THEO THỜI GIAN THỰC LÊN STATUSSTRIP
-        /// </summary>
-        /// <param name="thongDiepTrangThai">Thông điệp hành động vừa thực hiện</param>
         private void CapNhatThongKeStatusStrip(string? thongDiepTrangThai = null)
         {
-            // 1. Cập nhật thông điệp trạng thái thao tác real-time
             if (!string.IsNullOrEmpty(thongDiepTrangThai))
             {
                 lblTrangThai.Text = thongDiepTrangThai;
             }
-
-            // 2. Thuật toán tính toán chỉ số thống kê tồn kho từ danh sách hiện tại
-            // Công thức: Tổng giá trị = sum(Số lượng * Đơn giá)
             int soMatHang = _bindingSource.Count;
             int tongSoLuongTon = 0;
             decimal tongGiaTriTonKho = 0;
@@ -212,37 +205,27 @@ namespace Lab06
                 tongGiaTriTonKho += thanhTien;
             }
 
-            // 3. Hiển thị trực tiếp các chỉ số thống kê lên các nhãn của StatusStrip
-            lblTongSanPham.Text = $"📦 Mặt hàng: {soMatHang} | Tổng SL tồn: {tongSoLuongTon:N0} chiếc";
-            lblTongGiaTriTonKho.Text = $"💰 TỔNG TỒN KHO: {tongGiaTriTonKho:N0} VNĐ";
+            lblTongSanPham.Text = $"{soMatHang} mặt hàng | SL: {tongSoLuongTon:N0}";
+            lblTongGiaTriTonKho.Text = $"Tồn kho: {tongGiaTriTonKho:N0} VNĐ";
         }
 
-        /// <summary>
-        /// Timer cập nhật đồng hồ thời gian thực mỗi giây góc phải StatusStrip
-        /// </summary>
         private void timerDongHo_Tick(object sender, EventArgs e)
         {
-            lblDongHo.Text = $"🕒 {DateTime.Now:dd/MM/yyyy HH:mm:ss}";
+            lblDongHo.Text = $"{DateTime.Now:dd/MM/yyyy HH:mm:ss}";
         }
 
         #endregion
 
         #region Xử lý các Nút Thao tác: Thêm SP, Chỉnh sửa, Cập nhật, Hủy, Xóa, Làm mới
 
-        /// <summary>
-        /// Khi bấm "Thêm SP": Xóa trắng form, mở khóa nhập liệu, kích hoạt nút Cập nhật
-        /// </summary>
         private void btnThem_Click(object sender, EventArgs e)
         {
             XoaTrangFormNhapLieu();
             ThietLapTrangThaiForm(FormMode.Add);
             txtMaSP.Focus();
-            CapNhatThongKeStatusStrip("📝 Đang ở chế độ Thêm mới SP. Vui lòng nhập thông tin rồi bấm 'Cập nhật' để lưu");
+            CapNhatThongKeStatusStrip("Đang ở chế độ Thêm mới SP. Nhập thông tin rồi bấm 'Cập nhật' để lưu");
         }
 
-        /// <summary>
-        /// Nút "Chỉnh sửa": MỞ KHÓA TẤT CẢ CÁC THÔNG TIN CHI TIẾT để sửa lại thông tin của các mặt hàng
-        /// </summary>
         private void btnChinhSua_Click(object sender, EventArgs e)
         {
             if (_bindingSource.Current is not Product spDangChon)
@@ -251,21 +234,16 @@ namespace Lab06
                 return;
             }
 
-            // Mở khóa tất cả các thông tin chi tiết và kích hoạt nút Cập nhật
             ThietLapTrangThaiForm(FormMode.Edit);
             txtTenSP.Focus();
-            CapNhatThongKeStatusStrip($"✏️ Đang chỉnh sửa SP [{spDangChon.MaSP} - {spDangChon.TenSP}]. Chỉnh sửa xong bấm 'Cập nhật' để lưu lại");
+            CapNhatThongKeStatusStrip($"Đang chỉnh sửa SP [{spDangChon.MaSP} - {spDangChon.TenSP}]. Chỉnh sửa xong bấm 'Cập nhật' để lưu lại");
         }
 
-        /// <summary>
-        /// NÚT "CẬP NHẬT": CHỈ CÓ THỂ SỬ DỤNG KHI ẤN VÀO 'Thêm SP' HOẶC 'Chỉnh sửa'
-        /// Thực hiện lưu dữ liệu vào hệ thống và khóa lại form
-        /// </summary>
         private void btnCapNhat_Click(object sender, EventArgs e)
         {
             if (_currentMode == FormMode.Add)
             {
-                // XỬ LÝ LƯU KHI THÊM MỚI SẢN PHẨM
+
                 string maSP = txtMaSP.Text.Trim();
                 string tenSP = txtTenSP.Text.Trim();
                 string loaiSP = cboLoaiSP.Text;
@@ -275,7 +253,6 @@ namespace Lab06
                 bool conKinhDoanh = chkConKinhDoanh.Checked;
                 string duongDanAnh = _duongDanAnhHienTai;
 
-                // Validation dữ liệu
                 if (string.IsNullOrEmpty(maSP))
                 {
                     MessageBox.Show("Vui lòng nhập Mã sản phẩm!", "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -290,7 +267,6 @@ namespace Lab06
                     return;
                 }
 
-                // Kiểm tra trùng mã sản phẩm
                 foreach (var sp in _danhSachGoc)
                 {
                     if (sp.MaSP.Equals(maSP, StringComparison.OrdinalIgnoreCase))
@@ -308,7 +284,6 @@ namespace Lab06
                     return;
                 }
 
-                // Tạo đối tượng và thêm vào danh sách
                 Product spMoi = new Product(maSP, tenSP, loaiSP, donGia, soLuong, ngayNhap, conKinhDoanh, duongDanAnh);
                 _danhSachGoc.Add(spMoi);
 
@@ -319,15 +294,14 @@ namespace Lab06
 
                 _bindingSource.Position = _danhSachGoc.IndexOf(spMoi);
 
-                // Khóa lại tất cả thông tin chi tiết và tắt nút Cập nhật
                 ThietLapTrangThaiForm(FormMode.View);
 
-                CapNhatThongKeStatusStrip($"✅ Vừa thêm mới SP [{spMoi.MaSP} - {spMoi.TenSP}] thành công");
+                CapNhatThongKeStatusStrip($"Đã thêm mới SP [{spMoi.MaSP} - {spMoi.TenSP}] thành công");
                 MessageBox.Show($"Đã thêm mới sản phẩm [{spMoi.TenSP}] thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else if (_currentMode == FormMode.Edit)
             {
-                // XỬ LÝ LƯU KHI CHỈNH SỬA SẢN PHẨM
+
                 if (_bindingSource.Current is not Product spDangChon)
                 {
                     MessageBox.Show("Không tìm thấy sản phẩm cần cập nhật!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -349,7 +323,6 @@ namespace Lab06
                     return;
                 }
 
-                // Cập nhật thông tin vào đối tượng
                 spDangChon.TenSP = tenSP;
                 spDangChon.LoaiSP = cboLoaiSP.Text;
                 spDangChon.DonGia = numDonGia.Value;
@@ -358,25 +331,19 @@ namespace Lab06
                 spDangChon.ConKinhDoanh = chkConKinhDoanh.Checked;
                 spDangChon.DuongDanAnh = _duongDanAnhHienTai;
 
-                // Đồng bộ cập nhật lên DataGridView
                 _bindingSource.ResetBindings(false);
 
-                // Khóa lại tất cả thông tin chi tiết và tắt nút Cập nhật
                 ThietLapTrangThaiForm(FormMode.View);
 
-                CapNhatThongKeStatusStrip($"✏️ Đã cập nhật SP [{spDangChon.MaSP} - {spDangChon.TenSP}] thành công");
+                CapNhatThongKeStatusStrip($"Đã cập nhật SP [{spDangChon.MaSP} - {spDangChon.TenSP}] thành công");
                 MessageBox.Show($"Đã cập nhật thông tin sản phẩm [{spDangChon.MaSP}] thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
-        /// <summary>
-        /// Nút "Hủy bỏ": Hủy bỏ thao tác Thêm hoặc Chỉnh sửa, khóa lại form và phục hồi dữ liệu ban đầu
-        /// </summary>
         private void btnHuy_Click(object sender, EventArgs e)
         {
             ThietLapTrangThaiForm(FormMode.View);
 
-            // Nạp lại dữ liệu của dòng đang chọn
             if (_bindingSource.Current is Product sp)
             {
                 HienThiThongTinSanPhamLenForm(sp);
@@ -386,12 +353,9 @@ namespace Lab06
                 XoaTrangFormNhapLieu();
             }
 
-            CapNhatThongKeStatusStrip("🟢 Đã hủy thao tác, quay về chế độ chỉ xem");
+            CapNhatThongKeStatusStrip("Đã hủy thao tác, quay về chế độ chỉ xem");
         }
 
-        /// <summary>
-        /// Xóa sản phẩm đang chọn khỏi hệ thống
-        /// </summary>
         private void btnXoa_Click(object sender, EventArgs e)
         {
             if (_bindingSource.Current is not Product spDangChon)
@@ -428,14 +392,11 @@ namespace Lab06
                 }
 
                 ThietLapTrangThaiForm(FormMode.View);
-                CapNhatThongKeStatusStrip($"🗑️ Đã xóa sản phẩm [{maSPDaXoa} - {tenSPDaXoa}] khỏi hệ thống");
+                CapNhatThongKeStatusStrip($"Đã xóa sản phẩm [{maSPDaXoa} - {tenSPDaXoa}] khỏi hệ thống");
                 MessageBox.Show($"Đã xóa sản phẩm [{maSPDaXoa}] thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
-        /// <summary>
-        /// Làm mới: Khôi phục danh sách hiển thị gốc và đưa Form về chế độ Xem
-        /// </summary>
         private void btnLamMoi_Click(object sender, EventArgs e)
         {
             ResetBoLocTimKiem();
@@ -450,7 +411,7 @@ namespace Lab06
                 XoaTrangFormNhapLieu();
             }
 
-            CapNhatThongKeStatusStrip("🔄 Đã làm mới các trường và hiển thị toàn bộ danh sách");
+            CapNhatThongKeStatusStrip("Đã làm mới các trường và hiển thị toàn bộ danh sách");
         }
 
         private void XoaTrangFormNhapLieu()
@@ -483,14 +444,10 @@ namespace Lab06
 
         #region DataGridView Events & Hiển thị Chi tiết
 
-        /// <summary>
-        /// Khi người dùng chọn dòng trên DataGridView, hiển thị dữ liệu chi tiết lên form
-        /// </summary>
         private void dgvSanPham_SelectionChanged(object sender, EventArgs e)
         {
             if (_isDataBinding) return;
 
-            // Chỉ cập nhật hiển thị khi đang ở chế độ xem (View)
             if (_currentMode != FormMode.View) return;
 
             if (_bindingSource.Current is Product sp)
@@ -498,7 +455,7 @@ namespace Lab06
                 HienThiThongTinSanPhamLenForm(sp);
                 btnChinhSua.Enabled = true;
                 btnXoa.Enabled = true;
-                lblTrangThai.Text = $"🔍 Đang xem chi tiết SP: [{sp.MaSP}] - {sp.TenSP}";
+                lblTrangThai.Text = $"Xem chi tiết SP: [{sp.MaSP}] - {sp.TenSP}";
             }
             else
             {
@@ -546,12 +503,12 @@ namespace Lab06
         private void btnBoLoc_Click(object sender, EventArgs e)
         {
             ResetBoLocTimKiem();
-            CapNhatThongKeStatusStrip("🔄 Đã bỏ lọc, hiển thị toàn bộ sản phẩm");
+            CapNhatThongKeStatusStrip("Đã bỏ lọc, hiển thị toàn bộ sản phẩm");
         }
 
         private void ThucHienLocVaTimKiem()
         {
-            // Nếu đang trong quá trình Thêm hoặc Sửa thì không kích hoạt lọc
+
             if (_currentMode != FormMode.View) return;
 
             string tuKhoa = txtTimKiem.Text.Trim().ToLower();
@@ -562,7 +519,7 @@ namespace Lab06
                 if (_bindingSource.DataSource != _danhSachGoc)
                 {
                     _bindingSource.DataSource = _danhSachGoc;
-                    CapNhatThongKeStatusStrip("🟢 Đang hiển thị toàn bộ danh sách sản phẩm");
+                    CapNhatThongKeStatusStrip("Đang hiển thị toàn bộ danh sách sản phẩm");
                 }
                 return;
             }
@@ -585,7 +542,7 @@ namespace Lab06
             }
 
             _bindingSource.DataSource = ketQuaLoc;
-            CapNhatThongKeStatusStrip($"🔎 Tìm thấy {ketQuaLoc.Count} sản phẩm phù hợp");
+            CapNhatThongKeStatusStrip($"Tìm thấy {ketQuaLoc.Count} sản phẩm phù hợp");
         }
 
         private void ResetBoLocTimKiem()
@@ -614,7 +571,7 @@ namespace Lab06
                 {
                     _duongDanAnhHienTai = ofd.FileName;
                     HienThiHinhAnh(_duongDanAnhHienTai);
-                    lblTrangThai.Text = "📷 Đã chọn ảnh minh họa cho sản phẩm";
+                    lblTrangThai.Text = "Đã chọn ảnh minh họa cho sản phẩm";
                 }
             }
         }
@@ -627,7 +584,7 @@ namespace Lab06
             {
                 try
                 {
-                    // Dùng MemoryStream đọc ảnh để tránh khóa file trên ổ cứng
+
                     byte[] imageBytes = File.ReadAllBytes(duongDanAnh);
                     using (MemoryStream ms = new MemoryStream(imageBytes))
                     {
@@ -692,7 +649,7 @@ namespace Lab06
                             ProductFileService.ExportToTxt(duongDanLuu, danhSachXuat);
                         }
 
-                        CapNhatThongKeStatusStrip($"💾 Đã xuất file thành công: {Path.GetFileName(duongDanLuu)}");
+                        CapNhatThongKeStatusStrip($"Đã xuất file thành công: {Path.GetFileName(duongDanLuu)}");
 
                         DialogResult hoiMoFile = MessageBox.Show(
                             $"Xuất dữ liệu thành công!\n\nĐường dẫn: {duongDanLuu}\nTổng số mặt hàng đã xuất: {danhSachXuat.Count}\n\nBạn có muốn mở file vừa xuất ngay bây giờ không?",
@@ -708,12 +665,42 @@ namespace Lab06
                     catch (Exception ex)
                     {
                         MessageBox.Show($"Đã xảy ra lỗi khi ghi file: {ex.Message}", "Lỗi xuất file", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        CapNhatThongKeStatusStrip($"❌ Lỗi xuất file: {ex.Message}");
+                        CapNhatThongKeStatusStrip($"Lỗi xuất file: {ex.Message}");
                     }
                 }
             }
         }
 
         #endregion
+
+        private void picHinhAnh_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblTongGiaTriTonKho_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void picHinhAnh_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblHeaderSubtitle_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblHeaderTitle_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblTrangThai_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
